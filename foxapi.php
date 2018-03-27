@@ -1,6 +1,6 @@
 <?php
 class FoxApi {
-  function __constructor($db){
+  function __construct($db){
     $this->db=$db;
   }
   function saveData($str){
