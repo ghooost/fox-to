@@ -1,28 +1,31 @@
 <?php
 $err=array();
+$sql='';
 //echo $conn;
 // Microsoft Access connection string.
 //$conn->Open("Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\inetpub\wwwroot\php\mydb.mdb");
 try {
+  require "foxapi.php";
+  $conn = new COM("ADODB.Connection") or die("Cannot start ADO");
+
+  $conn->Open("Provider = VFPOLEDB.1; Data Source = \"C:\\Users\\Dev\\Desktop\\FoxProProj\\db_test\\a0a.dbf\"");
+  $api=new FoxApi($conn);
+
   $mode=empty($_REQUEST['mode'])?'':$_REQUEST['mode'];
   switch($mode) {
     case 'insert':
-      // require "foxapi.php";
-      // $conn = new COM("ADODB.Connection") or die("Cannot start ADO");
       //
-      // $conn->Open("Provider = VFPOLEDB.1; Data Source = \"C:\\Users\\Dev\\Desktop\\FoxProProj\\db_test\\a0a.dbf\"");
-      // $api=new FoxApi($conn);
-      //
-      // $api->insert("b131",array(
-      //   "nsert"=>"2018Данные для ДПС.23.01.00003",
-      //   "id_13"=>"1234",
-      //   "p2_a1_1"=>"это тест"
-      // ));
+      $api->insert("b131",array(
+         "nsert"=>"2018Данные для ДПС.23.01.00003",
+         "id_13"=>"1234",
+         "p2_a1_1"=>"это тест"
+       ));
     break;
     case 'sql':
-      require "foxapi.php";
-      $conn->Open("Provider = VFPOLEDB.1; Data Source = \"C:\\Users\\Dev\\Desktop\\FoxProProj\\db_test\\a0a.dbf\"");
-      $api=new FoxApi($conn);
+      $sql=$_REQUEST['data'];
+      if($sql)
+        $api->sql($sql);
+
     //
     // $api->insert("b131",array(
     //   "nsert"=>"2018Данные для ДПС.23.01.00003",
@@ -50,10 +53,11 @@ try {
 
 
 } catch (Exception $e){
-  $err[]=$e->message;
+  $err[]=$e->getMessage();
 }
 // SQL statement to build recordset.
 
+$viewerr='';
 if(count($err)){
   $viewerr='<div><p>'.join('</p><p>',$err).'</p></div>';
 }
@@ -70,8 +74,9 @@ $viewerr
 <h2>Test sql</h2>
 <form action="server.php">
 <input type="hidden" name="mode" value="sql"><br>
-<textarea name="data" cols=5 style="100%">$sql</textarea>
+<textarea name="data" cols=5 style="width:100%">$sql</textarea>
 <button>Submit</button>
+</form>
 <hr>
 <h2>Request</h2>
 <form action="server.php">
