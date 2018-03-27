@@ -21,6 +21,15 @@ try {
          "p2_a1_1"=>"это тест"
        ));
     break;
+    case "request":
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $_REQUEST['url']);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $output = curl_exec($ch);
+      curl_close($ch);
+      $err[]=$output;
+
+    break;
     case 'sql':
       $sql=$_REQUEST['data'];
       if($sql)
@@ -80,7 +89,8 @@ $viewerr
 <hr>
 <h2>Request</h2>
 <form action="server.php">
-<input type="hidden" name="mode" value="insert"><br>
+<input type="hidden" name="mode" value="request"><br>
+<input type="text" style="width:100%" name="url" value="http://192.168.3.54:5002/kz?id=2">
 <button>Do request</button>
 <hr>
 </form>
