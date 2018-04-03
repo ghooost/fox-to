@@ -5,6 +5,12 @@ $sql='';
 // Microsoft Access connection string.
 //$conn->Open("Provider=Microsoft.Jet.OLEDB.4.0; Data Source=C:\inetpub\wwwroot\php\mydb.mdb");
 try {
+
+  function HandleHeaderLine( $curl, $header_line ) {
+    echo "<br>YEAH: ".$header_line; // or do whatever
+    return strlen($header_line);
+  }
+
   require "foxapi.php";
   $conn = new COM("ADODB.Connection") or die("Cannot start ADO");
 
@@ -22,13 +28,22 @@ try {
        ));
     break;
     case "request":
+      // $f=fopen($_REQUEST['url'],"r");
       $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $_REQUEST['url']);
+      curl_setopt($ch, CURLOPT_URL,"http://192.168.3.54:5002/kz");
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      $output = curl_exec($ch);
+      curl_setopt($ch, CURLOPT_HEADERFUNCTION, "HandleHeaderLine");
+      $response = curl_exec($ch);
       curl_close($ch);
-      $err[]=$output;
+      $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+      $header = substr($response, 0, $header_size);
+      $body = substr($response, $header_size);
 
+
+      echo $header,'<hr>',$body;
+//      $err[]=$content;
+      //$err[]=$_REQUEST['url'];
+      //$err[]=join('',file($_REQUEST['url']));
     break;
     case 'sql':
       $sql=$_REQUEST['data'];
