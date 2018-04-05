@@ -16,10 +16,11 @@ class FoxApi {
       $clearval[]='"'.addslashes($v).'"';
 
     $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$clearval).')';
+    echo $sql;
     $this->db->Execute($sql);
   }
   function sql($sql){
-    $this->db->Execute($sql);
+    return $this->db->Execute($sql);
   }
 }
 ?>
