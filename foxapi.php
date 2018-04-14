@@ -29,31 +29,128 @@ class FoxApi {
   }
 
   function insertItem($data){
-    foreach($data['OtherInfo'] as $k=>$v) echo $k,'=>',$v,'<br>';
-    $itemData=$this->processRootSection($data,array());
-    //print_r($data);
+//    foreach($data['OtherInfo'] as $k=>$v) echo $k,'=>',$v,'<br>';
+    // $itemData=array();
+    // $this->processRootSection($data,$itemData);
+    $data['base_id']=$this->makeDocId($data);
+    $this->fillB10($data);
+//    print_r($itemData);
   }
 
-  function processRootSection($dataIn,$dataOut){
-    $dataOut['type_doc_id']
+  function fillB10($dataIn){
+    $dataToInsert['nsert']=$this->makeString(date('Y').$dataIn['base_id']);
+    $dataToInsert['p2_1']=$this->makeString(" "); //required
+    $dataToInsert['p2_2']=$this->makeString($dataIn['base_id']);
+    $dataToInsert['p2_3']=$this->makeDate();//required
+    $dataToInsert['p2_4']=$this->makeDate($dataIn['OtherInfo']['start_date']);
+    $dataToInsert['p2_5']=$this->makeDate($dataIn['OtherInfo']['end_date']);
+    //TODO: получить blank id
+    $dataToInsert['p2_7']=$this->makeString("blank id");//required
+    //TODO: количество листов в приложении - где?
+    $dataToInsert['p2_8_3']=0;//required
+
+    $dataToInsert['zayv']=$this->makeString(" ");//required
+
+    $dataToInsert['prod']=$this->makeString(" ");//required
+
+    //TODO: понять что такое p2_a_2
+    $dataToInsert['p2_a_2']=0;//required
+    $dataToInsert['p2_a_3']=
+      $this->chooseFromList(
+        $data['Production']['ProductType'],
+        array(
+          'Ser'=>'серия',
+          'Part'=>'партия',
+          'Single'=>'единичное изделие'
+        )
+      );
+
+    //TODO: понять что такое p2_c
+    $dataToInsert['p2_c']=0;//required
+
+
+    //TODO: спросить где в данных  Признак включения продукции в единый перечень
+    $dataToInsert['priznak']=
+    $this->chooseFromList(
+      $data['priznak'],
+      array(
+        '1'=>'Продукция исключена из единого перечня ( по ТР ТС/ЕАЭС )',
+        '2'=>'Продукция включена в единый перечень (по Решению КТС № 620)'
+      )
+    );
+
+    //TODO: понять что такое p2_g
+    $dataToInsert['p2_g']=0;//required
+
+    //TODO: понять что такое p2_h
+    $dataToInsert['p2_h']=$this->makeString(" ");//required
+
+
+    $this->insert('b10',$dataToInsert);
+  }
+
+
+  function chooseFromList($data,$list){
+    if(empty($list[$data])){
+      return "'Wrong value ".$data."'";
+    };
+    return $list[$data];
+  }
+
+  function makeDate($date=""){
+    $pieces=preg_split('/-/',$date);
+    if(count($pieces)!=3){
+      return 'DATE()';
+    } else {
+      return 'DATE('.$pieces[0].','.$pieces[1].','.$pieces[2].')';
+    };
+  }
+
+  function makeString($data){
+    return '"'.addslashes($data).'"';
+  }
+
+  function makeDocId($dataIn){
+    //Possible values:
+    $types=array(
+      "сертификат партии продукции"=>1,
+      "сертификат серийного произодства"=>2,
+      "декларация партии продукции"=>3,
+      "декларация о серийном производстве"=>4
+    );
+    //TODO: сделать реальный выбор типа документа
+    $type=1;
+    $ret='';
+    switch($type){
+      case 1:
+        $ret="21.01";
+      break;
+      case 2:
+        $ret="22.01";
+      break;
+      case 3:
+        $ret="23.01";
+      break;
+      case 4:
+        $ret="24.01";
+      break;
+    };
+    return "Данные для ДПС.".$ret.".".$dataIn['OtherInfo']['time_number'];
   }
 
   function insert($table,$data){
     $fields=array_keys($data);
     $values=array_values($data);
 
-    $clearval=array();
-    foreach($values as $v)
-      $clearval[]='"'.addslashes($v).'"';
-
-    $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$clearval).')';
-//    echo $sql;
-    $this->db->Execute($sql);
+    $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$values).')';
+    echo $sql;
+    //$this->db->Execute($sql);
   }
 
   function sql($sql){
     return $this->db->Execute($sql);
   }
+
   function queryData($url=""){
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL,$this->urlBase.$url);
@@ -66,7 +163,5 @@ class FoxApi {
     $body = substr($response, $header_size);
     $this->applyItemJSON($body);
   }
-
-
 }
 ?>
