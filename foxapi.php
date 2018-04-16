@@ -37,28 +37,26 @@ class FoxApi {
     // $itemData=array();
     // $this->processRootSection($data,$itemData);
     $data['base_id']=$this->makeDocId($data);
+    $data['nsert']=date('Y').$this->makeDocId($data);
     $this->fillB10($data);
+    $this->fillB14($data);
 //    print_r($itemData);
   }
 
   function fillB10($dataIn){
-    $fields=array("nsert","p2_1","p2_2","p2_3","p2_4","p2_5","p2_7","p2_8_3","zayv",
-    "prod","p2_a_2","p2_a_3","p2_c","priznak","p2_g","p2_h","p2_i","p2_k_1",
-    "name_st","p2_k2_1","p2_k2_2","p2_k2_3","p2_k_3","p2_k_4","p2_k_5","p2_l",
-    "fio","pole_zay","pole_zayk","fio_zay","fio_zayk","fio_zayr","fio_zayrk",
-    "pole_izg","pole_izgk","pole_prod","pole_prodk","pole_tnved","pr_pril",
-    "pole_npa","pole_npak","pole_osn","pole_osnk","pole_dop","pole_dopk",
-    "pole_exp","pole_expk","stat_otpr","dt_st_otpr","stat_pol");
+    $dataToInsert=emptyFields(
+      array("nsert","p2_1","p2_2","p2_3","p2_4","p2_5","p2_7","p2_8_3","zayv",
+      "prod","p2_a_2","p2_a_3","p2_c","priznak","p2_g","p2_h","p2_i","p2_k_1",
+      "name_st","p2_k2_1","p2_k2_2","p2_k2_3","p2_k_3","p2_k_4","p2_k_5","p2_l",
+      "fio","pole_zay","pole_zayk","fio_zay","fio_zayk","fio_zayr","fio_zayrk",
+      "pole_izg","pole_izgk","pole_prod","pole_prodk","pole_tnved","pr_pril",
+      "pole_npa","pole_npak","pole_osn","pole_osnk","pole_dop","pole_dopk",
+      "pole_exp","pole_expk","stat_otpr","dt_st_otpr","stat_pol"),
+      array(),
+      array("p2_3","p2_4","p2_5","p2_k2_2","p2_k_3","p2_k_4","dt_st_otpr")
+    );
 
-    $num_fields=array();
-    $date_fields=array("p2_3","p2_4","p2_5","p2_k2_2","p2_k_3","p2_k_4","dt_st_otpr");
-
-    foreach($fields as $v)  $dataToInsert[$v]=$this->makeString(" ");
-    foreach($num_fields as $v)  $dataToInsert[$v]=0;
-    foreach($date_fields as $v)  $dataToInsert[$v]=$this->makeDate();
-
-
-    $dataToInsert['nsert']=$this->makeString(date('Y').$dataIn['base_id']);
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
     $dataToInsert['p2_2']=$this->makeString($dataIn['base_id']);
     $dataToInsert['p2_4']=$this->makeDate($dataIn['OtherInfo']['start_date']);
     $dataToInsert['p2_5']=$this->makeDate($dataIn['OtherInfo']['end_date']);
@@ -110,6 +108,47 @@ class FoxApi {
     $this->insert('b10',$dataToInsert);
   }
 
+  function fillB14($dataIn){
+    $dataToInsert=emptyFields(
+      array("nsert","p2_a4_1","p2_a4_2","p2_a4_3","p2_a4_4","p2_a4_5","p2_a4_6")
+    );
+
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+
+    //TODO: узнать где хранится код страны
+    $dataToInsert['p2_a4_1']=$this->makeString("KZ");
+
+    $dataToInsert['p2_a4_2']=$this->makeString($dataIn['Izgotovitel']['title']);
+    $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTittle']);
+    $dataToInsert['p2_a4_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
+    $dataToInsert['p2_a4_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
+
+    $dataToInsert['p2_a4_6']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
+
+    $this->insert('b14',$dataToInsert);
+  }
+
+  function fillB16($dataIn){
+    $dataToInsert=emptyFields(
+      array("nsert","p2_b_1","p2_b_2","p2_b_3","p2_b_4","p2_b_5","p2_b_6","p2_b_7","p2_b_8"),
+      array(),
+      array("p2_b_2")
+    );
+
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+
+    //TODO: узнать где хранится код страны
+    $dataToInsert['p2_b_1']=$this->makeString("KZ");
+
+    $dataToInsert['p2_b_2']=$this->makeString($dataIn['Izgotovitel']['title']);
+    $dataToInsert['p2_b_3']=$this->makeString($dataIn['Izgotovitel']['shortTittle']);
+    $dataToInsert['p2_b_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
+    $dataToInsert['p2_b_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
+
+    $dataToInsert['p2_b_6']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
+
+    $this->insert('b16',$dataToInsert);
+  }
 
   function chooseFromList($data,$list){
     if(empty($list[$data])){
@@ -159,6 +198,14 @@ class FoxApi {
     return "Данные для ДПС.".$ret.".".$dataIn['OtherInfo']['time_number'];
   }
 
+
+  function emptyFields($fields,$num_fields=array(),$date_fields=array()){
+    $dataToInsert=array();
+    foreach($fields as $v)  $dataToInsert[$v]=$this->makeString(" ");
+    foreach($num_fields as $v)  $dataToInsert[$v]=0;
+    foreach($date_fields as $v)  $dataToInsert[$v]=$this->makeDate();
+    return $dataToInsert;
+  }
   function insert($table,$data){
     $fields=array_keys($data);
     $values=array_values($data);
