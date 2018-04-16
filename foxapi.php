@@ -44,7 +44,7 @@ class FoxApi {
   function fillB10($dataIn){
     $fields=array("nsert","p2_1","p2_2","p2_3","p2_4","p2_5","p2_7","p2_8_3","zayv",
     "prod","p2_a_2","p2_a_3","p2_c","priznak","p2_g","p2_h","p2_i","p2_k_1",
-    "name_t","p2_k2_1","p2_k2_2","p2_k2_3","p2_k_3","p2_k_4","p2_k_5","p2_l",
+    "name_st","p2_k2_1","p2_k2_2","p2_k2_3","p2_k_3","p2_k_4","p2_k_5","p2_l",
     "fio","pole_zay","pole_zayk","fio_zay","fio_zayk","fio_zayr","fio_zayrk",
     "pole_izg","pole_izgk","pole_prod","pole_prodk","pole_tnved","pr_pril",
     "pole_npa","pole_npak","pole_osn","pole_osnk","pole_dop","pole_dopk",
@@ -76,7 +76,7 @@ class FoxApi {
     $dataToInsert['p2_a_2']=0;//required
     $dataToInsert['p2_a_3']=
       $this->chooseFromList(
-        $data['Production']['ProductType'],
+        $dataIn['Production']['ProductType'],
         array(
           'Ser'=>'серия',
           'Part'=>'партия',
@@ -91,7 +91,8 @@ class FoxApi {
     //TODO: спросить где в данных  Признак включения продукции в единый перечень
     $dataToInsert['priznak']=
     $this->chooseFromList(
-      $data['priznak'],
+      //$dataIn['priznak'],
+      '',
       array(
         '1'=>'Продукция исключена из единого перечня ( по ТР ТС/ЕАЭС )',
         '2'=>'Продукция включена в единый перечень (по Решению КТС № 620)'
@@ -104,9 +105,7 @@ class FoxApi {
     //TODO: понять что такое p2_h
     $dataToInsert['p2_h']=$this->makeString(" ");//required
 
-    $dataToInsert['p2_i']=$data['Production']['shema_id'];
-
-
+    $dataToInsert['p2_i']=$this->makeString($dataIn['Production']['shema_id']);
 
     $this->insert('b10',$dataToInsert);
   }
@@ -116,7 +115,7 @@ class FoxApi {
     if(empty($list[$data])){
       return "'Wrong value ".$data."'";
     };
-    return $list[$data];
+    return $this->makeString($list[$data]);
   }
 
   function makeDate($date=""){
@@ -167,7 +166,12 @@ class FoxApi {
     $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$values).')';
     $f=fopen("sql.txt","w");
     fputs($f,$sql);
+    fputs($f,"\r\nDATA:\r\n");
+    foreach($data as $k=>$v)
+      fputs($f,"$k=$v\r\n");
     fclose($f);
+
+
     $this->connectDB();
     if($this->db){
       $this->db->Execute($sql);
