@@ -85,6 +85,15 @@ class FoxApi {
     //TODO: понять что такое p2_h
     $dataToInsert['p2_h']=$this->makeString(" ");//required
 
+    $dataToInsert['p2_i']=
+    $this->chooseFromList(
+      $data['Production']['shema_id'],
+      array(
+        '1'=>'Продукция исключена из единого перечня ( по ТР ТС/ЕАЭС )',
+        '2'=>'Продукция включена в единый перечень (по Решению КТС № 620)'
+      )
+    );
+
 
     $this->insert('b10',$dataToInsert);
   }
