@@ -38,14 +38,29 @@ class FoxApi {
   }
 
   function fillB10($dataIn){
+    $fields=array("nsert","p2_1","p2_2","p2_3","p2_4","p2_5","p2_7","p2_8_3","zayv",
+    "prod","p2_a_2","p2_a_3","p2_c","priznak","p2_g","p2_h","p2_i","p2_k_1",
+    "name_t","p2_k2_1","p2_k2_2","p2_k2_3","p2_k_3","p2_k_4","p2_k_5","p2_l",
+    "fio","pole_zay","pole_zayk","fio_zay","fio_zayk","fio_zayr","fio_zayrk",
+    "pole_izg","pole_izgk","pole_prod","pole_prodk","pole_tnved","pr_pril",
+    "pole_npa","pole_npak","pole_osn","pole_osnk","pole_dop","pole_dopk",
+    "pole_exp","pole_expk","stat_otpr","dt_st_otpr","stat_pol");
+
+    $num_fields=array();
+    $date_fields=array("p2_3","p2_4","p2_5","p2_k2_2","p2_k_3","p2_k_4","dt_st_otpr");
+
+    foreach($fields as $v)  $dataToInsert[$v]=$this->makeString(" ");
+    foreach($num_fields as $v)  $dataToInsert[$v]=0;
+    foreach($date_fields as $v)  $dataToInsert[$v]=$this->makeDate();
+
+
     $dataToInsert['nsert']=$this->makeString(date('Y').$dataIn['base_id']);
-    $dataToInsert['p2_1']=$this->makeString(" "); //required
     $dataToInsert['p2_2']=$this->makeString($dataIn['base_id']);
-    $dataToInsert['p2_3']=$this->makeDate();//required
     $dataToInsert['p2_4']=$this->makeDate($dataIn['OtherInfo']['start_date']);
     $dataToInsert['p2_5']=$this->makeDate($dataIn['OtherInfo']['end_date']);
     //TODO: получить blank id
     $dataToInsert['p2_7']=$this->makeString("blank id");//required
+
     //TODO: количество листов в приложении - где?
     $dataToInsert['p2_8_3']=0;//required
 
@@ -85,14 +100,8 @@ class FoxApi {
     //TODO: понять что такое p2_h
     $dataToInsert['p2_h']=$this->makeString(" ");//required
 
-    $dataToInsert['p2_i']=
-    $this->chooseFromList(
-      $data['Production']['shema_id'],
-      array(
-        '1'=>'Продукция исключена из единого перечня ( по ТР ТС/ЕАЭС )',
-        '2'=>'Продукция включена в единый перечень (по Решению КТС № 620)'
-      )
-    );
+    $dataToInsert['p2_i']=$data['Production']['shema_id'];
+
 
 
     $this->insert('b10',$dataToInsert);

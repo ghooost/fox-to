@@ -20,6 +20,10 @@ try {
       $testJSON=join("",file("responce.js"));
       $api->saveData($testJSON);
     break;
+    case "test":
+      $testJSON=join("",file("responce.js"));
+      $api->saveData($testJSON);
+    break;
   };
 } catch (Exception $e){
   $err[]=$e->getMessage();
@@ -47,6 +51,11 @@ echo <<<EOT
 <input type="hidden" name="mode" value="request">
 {$api->apiURL}&nbsp;<input type="text" style="width:200px" name="url" value="?id=2">
 <button>Do request</button>
+<hr>
+<h2>Test insertion</h2>
+<form action="server.php">
+<input type="hidden" name="mode" value="test">
+<button>Do test</button>
 <hr>
 $viewerr
 </form>
