@@ -23,6 +23,7 @@ try {
     case "test":
       $testJSON=join("",file("responce.js"));
       $api->saveData($testJSON);
+      $api->closeDB();
     break;
   };
 } catch (Exception $e){

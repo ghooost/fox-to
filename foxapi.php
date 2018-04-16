@@ -8,17 +8,21 @@ class FoxApi {
 
     $this->connStr=$dbConnect!=""?$dbConnect:$def['dbConnect'];
     $this->apiURL=$apiURL!=""?$apiURL:$def['apiURL'];
+    $this->db=null;
 
     $this->debugMode=$debugMode;
   }
 
-  function connectDB($connStr){
-    $this->db = new COM("ADODB.Connection") or die("Cannot start ADO");
-    $this->db->Open($this->connStr);
+  function connectDB(){
+    if(!$this->db){
+      $this->db = new COM("ADODB.Connection") or die("Cannot start ADO");
+      $this->db->Open($this->connStr);
+    };
   }
 
   function closeDB(){
     $this->db->Close();
+    $this->db=null;
   }
 
   function saveData($str){
@@ -164,7 +168,10 @@ class FoxApi {
     $f=fopen("sql.txt","w");
     fputs($f,$sql);
     fclose($f);
-    //$this->db->Execute($sql);
+    $this->connectDB();
+    if($this->db){
+      $this->db->Execute($sql);
+    };
   }
 
   function sql($sql){
