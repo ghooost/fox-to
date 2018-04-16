@@ -174,7 +174,7 @@ class FoxApi {
 
     $this->connectDB();
     if($this->db){
-      $this->db->Execute($sql);
+      $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
     };
   }
 
