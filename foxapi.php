@@ -161,7 +161,9 @@ class FoxApi {
     $values=array_values($data);
 
     $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$values).')';
-    echo $sql;
+    $f=fopen("sql.txt","w");
+    fputs($f,$sql);
+    fclose($f);
     //$this->db->Execute($sql);
   }
 
