@@ -17,11 +17,11 @@ try {
   $mode=empty($_REQUEST['mode'])?'':$_REQUEST['mode'];
   switch($mode) {
     case "request":
-      $testJSON=join("",file("responce.js"));
+      $testJSON=join("",file("response2.json"));
       $api->saveData($testJSON);
     break;
     case "test":
-      $testJSON=join("",file("responce.js"));
+      $testJSON=join("",file("response2.json"));
       $api->saveData($testJSON);
       $api->closeDB();
     break;

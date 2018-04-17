@@ -27,7 +27,7 @@ class FoxApi {
 
   function saveData($str){
     $data=json_decode($str,TRUE);
-    foreach($data as $v){
+    foreach($data['items'] as $v){
       $this->insertItem($v);
     };
   }
@@ -40,6 +40,9 @@ class FoxApi {
     $data['nsert']=date('Y').$this->makeDocId($data);
     $this->fillB10($data);
     $this->fillB14($data);
+    $this->fillB16($data);
+    $this->fillB17($data);
+    $this->fillB18($data);
 //    print_r($itemData);
   }
 
@@ -60,8 +63,9 @@ class FoxApi {
     $dataToInsert['p2_2']=$this->makeString($dataIn['base_id']);
     $dataToInsert['p2_4']=$this->makeDate($dataIn['OtherInfo']['start_date']);
     $dataToInsert['p2_5']=$this->makeDate($dataIn['OtherInfo']['end_date']);
-    //TODO: получить blank id
-    $dataToInsert['p2_7']=$this->makeString("blank id");//required
+
+    //TODO: получить blank id Subtopic1?
+    $dataToInsert['p2_7']=$this->makeString("blankid?");//required
 
     //TODO: количество листов в приложении - где?
     $dataToInsert['p2_8_3']=0;//required
@@ -76,7 +80,7 @@ class FoxApi {
       $this->chooseFromList(
         $dataIn['Production']['ProductType'],
         array(
-          'Ser'=>'серия',
+          'Serial'=>'серия',
           'Part'=>'партия',
           'Single'=>'единичное изделие'
         )
@@ -108,6 +112,7 @@ class FoxApi {
     $this->insert('b10',$dataToInsert);
   }
 
+//Таблица изготовителя
   function fillB14($dataIn){
     $dataToInsert=emptyFields(
       array("nsert","p2_a4_1","p2_a4_2","p2_a4_3","p2_a4_4","p2_a4_5","p2_a4_6")
@@ -115,11 +120,11 @@ class FoxApi {
 
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
 
-    //TODO: узнать где хранится код страны
+    //TODO: узнать где хранится код страны - общий для изготовителя
     $dataToInsert['p2_a4_1']=$this->makeString("KZ");
 
     $dataToInsert['p2_a4_2']=$this->makeString($dataIn['Izgotovitel']['title']);
-    $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTittle']);
+    $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTitle']);
     $dataToInsert['p2_a4_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
     $dataToInsert['p2_a4_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
 
@@ -128,6 +133,7 @@ class FoxApi {
     $this->insert('b14',$dataToInsert);
   }
 
+//Сведения о документах подтверждающих соответствие
   function fillB16($dataIn){
     $dataToInsert=emptyFields(
       array("nsert","p2_b_1","p2_b_2","p2_b_3","p2_b_4","p2_b_5","p2_b_6","p2_b_7","p2_b_8"),
@@ -136,19 +142,115 @@ class FoxApi {
     );
 
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
-
-    //TODO: узнать где хранится код страны
-    $dataToInsert['p2_b_1']=$this->makeString("KZ");
-
-    $dataToInsert['p2_b_2']=$this->makeString($dataIn['Izgotovitel']['title']);
-    $dataToInsert['p2_b_3']=$this->makeString($dataIn['Izgotovitel']['shortTittle']);
-    $dataToInsert['p2_b_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
-    $dataToInsert['p2_b_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
-
-    $dataToInsert['p2_b_6']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
-
-    $this->insert('b16',$dataToInsert);
+    //TODO: узнать где Сведения о документах подтверждающих соответствие
+    //вроде бы никаких essential_documents_ids не видать
+    // $dataToInsert['p2_b_1']=$this->makeString("KZ");
+    // $dataToInsert['p2_b_2']=$this->makeString($dataIn['Izgotovitel']['title']);
+    // $dataToInsert['p2_b_3']=$this->makeString($dataIn['Izgotovitel']['shortTittle']);
+    // $dataToInsert['p2_b_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
+    // $dataToInsert['p2_b_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
+    // $dataToInsert['p2_b_6']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
+    // $dataToInsert['p2_b_7']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
+    // $dataToInsert['p2_b_8']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
+    //
+    // $this->insert('b16',$dataToInsert);
   }
+
+//Требования
+  function fillB17($dataIn){
+    $dataToInsert=emptyFields(
+      array("nsert","p2_d","name_tr","name_trk"),
+      array(),
+      array()
+    );
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+    if(!empty($dataIn['Trebovaniya']) && !empty($dataIn['Trebovaniya']['reglament_ids']))
+      foreach($dataIn['Trebovaniya']['reglament_ids'] as $v){
+        $dataToInsert['p2_d']=$this->makeString($v['number']);
+        $dataToInsert['name_tr']=$this->makeString($v['name']);
+        $dataToInsert['name_trk']=$this->makeString($v['name_kz']);
+
+        $this->insert('b17',$dataToInsert);
+      };
+  }
+
+//НПА, на соответствие требованиям которых проводилась проверка
+  function fillB18($dataIn){
+    $dataToInsert=emptyFields(
+      array("nsert","p2_e_1","p2_e_2","p2_e_3"),
+      array(),
+      array("p2_e_2")
+    );
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+    if(!empty($dataIn['Trebovaniya']) && !empty($dataIn['Trebovaniya']['npa']))
+      foreach($dataIn['Trebovaniya']['npa'] as $v){
+        $dataToInsert['p2_e_1']=$this->makeString($v['npa_d_title_doc']);
+        $dataToInsert['p2_e_2']=$this->makeDate($v['npa_d_date_of_issue']);
+        $dataToInsert['p2_e_3']=$this->makeString($v['npa_d_number_doc']);
+
+        $this->insert('b18',$dataToInsert);
+      };
+  }
+
+//Эксперты
+  function fillB19($dataIn){
+    $dataToInsert=emptyFields(
+      array("nsert","p2_f_1","p2_f_2","p2_f_3","fio","i_k","o_k","f_k"),
+      array(),
+      array()
+    );
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+    //TODO: узнать где инфа по экспертам
+  }
+
+//Сведенья о документах обеспечивающих соблюдение требований
+  function fillB21($dataIn){
+    $dataToInsert=emptyFields(
+      array("nsert","id","p2_j_2","p2_j_3","p2_j_4","p2_j_5"),
+      array(),
+      array("p2_j_5")
+    );
+    $id=1;
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+    if(!empty($dataIn['Dopinfo']) && !empty($dataIn['Dopinfo']['norm_doc']))
+      foreach($dataIn['Dopinfo']['norm_doc'] as $v){
+        $dataToInsert['id']=$id;
+        $dataToInsert['p2_j_2']=
+          $this->chooseFromList(
+            $dataIn['n_d_isPerechenInclude'],
+            array(
+              '1'=>'Да',
+              '0'=>'Нет'
+            )
+          );
+        $dataToInsert['p2_j_3']=$this->makeString($v['n_d_title_doc']);
+        $dataToInsert['p2_j_4']=$this->makeString($v['n_d_number_doc']);
+        $dataToInsert['p2_j_5']=$this->makeDate($v['n_d_date_of_issue']);
+
+        $this->insert('b21',$dataToInsert);
+
+        if(!empty($v['n_d_norm_razdel_ids']))
+          foreach($v['n_d_norm_razdel_ids'] as $v1)
+            $this->fillB211($v1,$id,$dataToInsert['nsert']);
+
+        $id+=1;
+      };
+  }
+
+//Разделы документов обеспечивающих соблюдение требований
+  function fillB211($itemData,$id,$nsert){
+    $dataToInsert=emptyFields(
+      array("nsert","id","p2_j1_1","p2_j1_2"),
+      array(),
+      array()
+    );
+    $dataToInsert['nsert']=$nsert;
+    $dataToInsert['id']=$id;
+    $dataToInsert['p2_j1_1']=$this->makeString($itemData['n_r_title_doc']);
+    $dataToInsert['p2_j1_2']=$this->makeString($itemData['n_r_name_element']);
+    $this->insert('b211',$dataToInsert);
+  }
+
 
   function chooseFromList($data,$list){
     if(empty($list[$data])){
@@ -171,31 +273,36 @@ class FoxApi {
   }
 
   function makeDocId($dataIn){
-    //Possible values:
-    $types=array(
-      "сертификат партии продукции"=>1,
-      "сертификат серийного произодства"=>2,
-      "декларация партии продукции"=>3,
-      "декларация о серийном производстве"=>4
-    );
-    //TODO: сделать реальный выбор типа документа
-    $type=1;
-    $ret='';
-    switch($type){
-      case 1:
-        $ret="21.01";
-      break;
-      case 2:
-        $ret="22.01";
-      break;
-      case 3:
-        $ret="23.01";
-      break;
-      case 4:
-        $ret="24.01";
-      break;
+    //TODO: выяснить правильный вариант генерации docid
+    if(!empty($dataIn['reg_number_full_string'])){
+      return $dataIn['reg_number_full_string'];
+    } else {
+      //Possible values:
+      $types=array(
+        "сертификат партии продукции"=>1,
+        "сертификат серийного произодства"=>2,
+        "декларация партии продукции"=>3,
+        "декларация о серийном производстве"=>4
+      );
+      //сделать реальный выбор типа документа
+      $type=1;
+      $ret='';
+      switch($type){
+        case 1:
+          $ret="21.01";
+        break;
+        case 2:
+          $ret="22.01";
+        break;
+        case 3:
+          $ret="23.01";
+        break;
+        case 4:
+          $ret="24.01";
+        break;
+      };
+      return "Данные для ДПС.".$ret.".".$dataIn['OtherInfo']['time_number'];
     };
-    return "Данные для ДПС.".$ret.".".$dataIn['OtherInfo']['time_number'];
   }
 
 
