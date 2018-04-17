@@ -3,7 +3,7 @@ class FoxApi {
   function __construct($debugMode=false, $dbConnect="",$apiURL=""){
     $def=array(
       "dbConnect"=>"Provider = VFPOLEDB.1; Data Source = \"C:\\Users\\Dev\\Desktop\\FoxProProj\\db_test\\a0a.dbf\"",
-      "apiURL"=>"http://192.168.3.54:5002/kz"
+      "apiURL"=>"http://192.168.3.54:5002"
     );
 
     $this->connStr=$dbConnect!=""?$dbConnect:$def['dbConnect'];
@@ -47,7 +47,7 @@ class FoxApi {
   }
 
   function fillB10($dataIn){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","p2_1","p2_2","p2_3","p2_4","p2_5","p2_7","p2_8_3","zayv",
       "prod","p2_a_2","p2_a_3","p2_c","priznak","p2_g","p2_h","p2_i","p2_k_1",
       "name_st","p2_k2_1","p2_k2_2","p2_k2_3","p2_k_3","p2_k_4","p2_k_5","p2_l",
@@ -93,9 +93,9 @@ class FoxApi {
     //TODO: спросить где в данных  Признак включения продукции в единый перечень
     $dataToInsert['priznak']=
     $this->chooseFromList(
-      //$dataIn['priznak'],
-      '',
+      $dataIn['OtherInfo']['productOnPerechen'],
       array(
+        '0'=>' ',
         '1'=>'Продукция исключена из единого перечня ( по ТР ТС/ЕАЭС )',
         '2'=>'Продукция включена в единый перечень (по Решению КТС № 620)'
       )
@@ -114,14 +114,13 @@ class FoxApi {
 
 //Таблица изготовителя
   function fillB14($dataIn){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","p2_a4_1","p2_a4_2","p2_a4_3","p2_a4_4","p2_a4_5","p2_a4_6")
     );
 
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
 
-    //TODO: узнать где хранится код страны - общий для изготовителя
-    $dataToInsert['p2_a4_1']=$this->makeString("KZ");
+    $dataToInsert['p2_a4_1']=$this->makeString($dataIn['Izgotovitel']['root_country_id']);
 
     $dataToInsert['p2_a4_2']=$this->makeString($dataIn['Izgotovitel']['title']);
     $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTitle']);
@@ -135,7 +134,7 @@ class FoxApi {
 
 //Сведения о документах подтверждающих соответствие
   function fillB16($dataIn){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","p2_b_1","p2_b_2","p2_b_3","p2_b_4","p2_b_5","p2_b_6","p2_b_7","p2_b_8"),
       array(),
       array("p2_b_2")
@@ -158,7 +157,7 @@ class FoxApi {
 
 //Требования
   function fillB17($dataIn){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","p2_d","name_tr","name_trk"),
       array(),
       array()
@@ -176,7 +175,7 @@ class FoxApi {
 
 //НПА, на соответствие требованиям которых проводилась проверка
   function fillB18($dataIn){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","p2_e_1","p2_e_2","p2_e_3"),
       array(),
       array("p2_e_2")
@@ -194,7 +193,7 @@ class FoxApi {
 
 //Эксперты
   function fillB19($dataIn){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","p2_f_1","p2_f_2","p2_f_3","fio","i_k","o_k","f_k"),
       array(),
       array()
@@ -205,7 +204,7 @@ class FoxApi {
 
 //Сведенья о документах обеспечивающих соблюдение требований
   function fillB21($dataIn){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","id","p2_j_2","p2_j_3","p2_j_4","p2_j_5"),
       array(),
       array("p2_j_5")
@@ -239,7 +238,7 @@ class FoxApi {
 
 //Разделы документов обеспечивающих соблюдение требований
   function fillB211($itemData,$id,$nsert){
-    $dataToInsert=emptyFields(
+    $dataToInsert=$this->emptyFields(
       array("nsert","id","p2_j1_1","p2_j1_2"),
       array(),
       array()
@@ -249,6 +248,22 @@ class FoxApi {
     $dataToInsert['p2_j1_1']=$this->makeString($itemData['n_r_title_doc']);
     $dataToInsert['p2_j1_2']=$this->makeString($itemData['n_r_name_element']);
     $this->insert('b211',$dataToInsert);
+  }
+
+  function processList($str){
+    global $out;
+    print_r($str);
+    $data=json_decode($str,TRUE);
+    print_r($data);
+    foreach($data['ids'] as $v){
+      try {
+        $body=$this->queryData("/api/getItem?id=".$v);
+        $itemData=json_decode($body,TRUE);
+        $this->insertItem($itemData);
+      } catch(Exception $e) {
+        $out[]=$e->getMessage();
+      }
+    };
   }
 
 
@@ -274,8 +289,8 @@ class FoxApi {
 
   function makeDocId($dataIn){
     //TODO: выяснить правильный вариант генерации docid
-    if(!empty($dataIn['reg_number_full_string'])){
-      return $dataIn['reg_number_full_string'];
+    if(!empty($dataIn['OtherInfo']['reg_number_full_string'])){
+      return $dataIn['OtherInfo']['reg_number_full_string'];
     } else {
       //Possible values:
       $types=array(
@@ -285,19 +300,19 @@ class FoxApi {
         "декларация о серийном производстве"=>4
       );
       //сделать реальный выбор типа документа
-      $type=1;
+      $type=$dataIn['OtherInfo']['typedocint'];
       $ret='';
       switch($type){
-        case 1:
+        case 21:
           $ret="21.01";
         break;
-        case 2:
+        case 22:
           $ret="22.01";
         break;
-        case 3:
+        case 23:
           $ret="23.01";
         break;
-        case 4:
+        case 24:
           $ret="24.01";
         break;
       };
@@ -314,6 +329,7 @@ class FoxApi {
     return $dataToInsert;
   }
   function insert($table,$data){
+    global $out;
     $fields=array_keys($data);
     $values=array_values($data);
 
@@ -325,11 +341,12 @@ class FoxApi {
       fputs($f,"$k=$v\r\n");
     fclose($f);
 
+    $out[]=$sql;
 
-    $this->connectDB();
-    if($this->db){
-      $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
-    };
+    // $this->connectDB();
+    // if($this->db){
+    //   $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
+    // };
   }
 
   function sql($sql){
@@ -337,16 +354,35 @@ class FoxApi {
   }
 
   function queryData($url=""){
+    try {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL,$this->apiURL.$url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $response = curl_exec($ch);
+      curl_close($ch);
+    } catch(Exception $e) {
+      throw new Exception("Curl error at ".$this->apiURL.$url.": ".$e->getMessage());
+    };
+    return $response;
+  }
+
+  function queryDataAdv($url=""){
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,$this->urlBase.$url);
+    echo $this->apiURL.$url."<br>";
+    curl_setopt($ch, CURLOPT_URL,$this->apiURL.$url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADERFUNCTION, "HandleHeaderLine");
     $response = curl_exec($ch);
-    curl_close($ch);
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     $header = substr($response, 0, $header_size);
     $body = substr($response, $header_size);
-    $this->applyItemJSON($body);
+    curl_close($ch);
+    return $response;
   }
 }
+
+function HandleHeaderLine( $curl, $header_line ) {
+  return strlen($header_line);
+}
+
 ?>
