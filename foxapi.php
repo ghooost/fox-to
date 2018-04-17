@@ -43,6 +43,9 @@ class FoxApi {
     $this->fillB16($data);
     $this->fillB17($data);
     $this->fillB18($data);
+    $this->fillB19($data);
+    $this->fillB21($data);
+    $this->fillB211($data);
 //    print_r($itemData);
   }
 
@@ -284,7 +287,7 @@ class FoxApi {
   }
 
   function makeString($data){
-    return '"'.addslashes($data).'"';
+    return "'".addslashes($data)."'";
   }
 
   function makeDocId($dataIn){
@@ -343,10 +346,10 @@ class FoxApi {
 
     $out[]=$sql;
 
-    // $this->connectDB();
-    // if($this->db){
-    //   $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
-    // };
+    $this->connectDB();
+    if($this->db){
+      $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
+    };
   }
 
   function sql($sql){
