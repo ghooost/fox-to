@@ -45,11 +45,12 @@ class FoxApi {
     $this->fillB18($data);
     $this->fillB19($data);
     $this->fillB21($data);
-    $this->fillB211($data);
+    //$this->fillB211($data);
     $this->fillB11($data);
 
     $this->fillB12($data);
     $this->fillB14($data);
+    $this->fillB13($data);
 //    print_r($itemData);
   }
 
@@ -228,7 +229,7 @@ class FoxApi {
         $dataToInsert['id']=$id;
         $dataToInsert['p2_j_2']=
           $this->chooseFromList(
-            $dataIn['n_d_isPerechenInclude'],
+            $v['n_d_isPerechenInclude'],
             array(
               '1'=>'Да',
               '0'=>'Нет'
@@ -319,9 +320,9 @@ class FoxApi {
     $dataToInsert['fr_k']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_surName_kz']);
 
     $dataToInsert['ruk']=$this->makeString(
-      $dataIn['Zajavitel']['fio_item_id']['post_id']['post_im_pad']+
-      $dataIn['Zajavitel']['fio_item_id']['surName']+
-      $dataIn['Zajavitel']['fio_item_id']['name']+
+      $dataIn['Zajavitel']['fio_item_id']['post_id']['post_im_pad'].
+      $dataIn['Zajavitel']['fio_item_id']['surName'].
+      $dataIn['Zajavitel']['fio_item_id']['name'].
       $dataIn['Zajavitel']['fio_item_id']['patronymicName']
     );
 
@@ -364,7 +365,7 @@ class FoxApi {
 
     $dataToInsert['nsert']=$this->makeString($nsert);
 
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
 
     if(!empty($dataIn['address']) && count($dataIn['address'])){
       $addr="";
@@ -400,7 +401,7 @@ class FoxApi {
   function fillB1201($dataIn,$id_f,$nsert){
     $dataToInsert=$this->emptyFields();
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
     $dataToInsert=$this->applyAddress($dataIn,'p2_99_a_',$dataToInsert);
     $this->insert('b1201',$dataToInsert);
   }
@@ -409,8 +410,8 @@ class FoxApi {
   function fillB1202($value, $code,$name,$id,$id_f,$nsert){
     $arr=preg_split('/[\,\s]+/',$value);
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id']=$this->makeString($id);
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id']=$this->makeNum($id);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
 
     if($arr && count($arr)){
       $dataToInsert['p2_99_b_1']=$this->makeString($code);
@@ -427,8 +428,8 @@ class FoxApi {
   //значения видов связи филиалов заявителя
   function fillB12021($value,$id,$id_f,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id']=$this->makeString($id);
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id']=$this->makeNum($id);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
     $dataToInsert['p2_99_b_3']=$this->makeString($value);
 
     $this->insert('b12021',$dataToInsert);
@@ -446,7 +447,7 @@ class FoxApi {
     $arr=preg_split('/[\,\s]+/',$value);
     if($arr && count($arr)){
       $dataToInsert['nsert']=$this->makeString($nsert);
-      $dataToInsert['id']=$this->makeString($id);
+      $dataToInsert['id']=$this->makeNum($id);
 
       $dataToInsert['p2_96_1']=$this->makeString($code);
       $dataToInsert['p2_96_2']=$this->makeString($name);
@@ -462,7 +463,7 @@ class FoxApi {
   //значения видов связи заявителя
   function fillB1221($value,$id,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id']=$this->makeNum($id);
     $dataToInsert['p2_96_3']=$this->makeString($value);
 
     $this->insert('b1221',$dataToInsert);
@@ -482,7 +483,7 @@ class FoxApi {
       $dataToInsert['p2_a4_1']=$this->makeString($dataIn['Izgotovitel']['root_country_id']);
 
       $dataToInsert['p2_a4_2']=$this->makeString($dataIn['Izgotovitel']['title']);
-      $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTitle']);
+      $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTittle']);
       $dataToInsert['p2_a4_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
       $dataToInsert['p2_a4_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
 
@@ -514,7 +515,7 @@ class FoxApi {
     }
 
   //филиал изготовителя
-  function fillB140($dataIn){
+  function fillB140($dataIn,$id_f,$nsert){
     $dataToInsert=$this->emptyFields(
       array("nsert","id_f","p2_a4_91","p2_a4_92","p2_a4_93","p2_a4_94","p2_a4_95",
         "p2_a4_96","p2_a4_97","p2_a4_98","p2_a4_99"),
@@ -523,7 +524,7 @@ class FoxApi {
     );
 
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
 
     if(!empty($dataIn['address']) && count($dataIn['address'])){
       $addr="";
@@ -561,7 +562,7 @@ class FoxApi {
   function fillB1401($dataIn,$id_f,$nsert){
     $dataToInsert=$this->emptyFields();
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
     $dataToInsert=$this->applyAddress($dataIn,'p2a4_9a',$dataToInsert);
     $this->insert('b1401',$dataToInsert);
   }
@@ -570,8 +571,8 @@ class FoxApi {
   function fillB1402($value, $code,$name,$id,$id_f,$nsert){
     $arr=preg_split('/[\,\s]+/',$value);
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id']=$this->makeString($id);
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id']=$this->makeNum($id);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
 
     if($arr && count($arr)){
       $dataToInsert['p2a4_9b1']=$this->makeString($code);
@@ -588,8 +589,8 @@ class FoxApi {
   //значения видов связи филиалов заявителя
   function fillB14021($value,$id,$id_f,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id']=$this->makeString($id);
-    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['id']=$this->makeNum($id);
+    $dataToInsert['id_f']=$this->makeNum($id_f);
     $dataToInsert['p2a4_9b3']=$this->makeString($value);
 
     $this->insert('b14021',$dataToInsert);
@@ -599,7 +600,9 @@ class FoxApi {
   function fillB141($dataIn,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
     $dataToInsert=$this->applyAddress($dataIn,'p2_a4_7',$dataToInsert);
-    $this->insert('b121',$dataToInsert);
+    $dataToInsert['p2_a4_7d']=$this->makeString($dataIn['adress_string']);
+    $dataToInsert['text']=$this->makeString($dataIn['adress_string']);
+    $this->insert('b141',$dataToInsert);
   }
 
   //виды связи заявителя
@@ -608,7 +611,7 @@ class FoxApi {
     $arr=preg_split('/[\,\s]+/',$value);
     if($arr && count($arr)){
       $dataToInsert['nsert']=$this->makeString($nsert);
-      $dataToInsert['id']=$this->makeString($id);
+      $dataToInsert['id']=$this->makeNum($id);
 
       $dataToInsert['p2_a4_81']=$this->makeString($code);
       $dataToInsert['p2_a4_82']=$this->makeString($name);
@@ -624,7 +627,7 @@ class FoxApi {
   //значения видов связи заявителя
   function fillB1421($value,$id,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id']=$this->makeNum($id);
     $dataToInsert['p2_a4_83']=$this->makeString($value);
 
     $this->insert('b1421',$dataToInsert);
@@ -654,7 +657,7 @@ class FoxApi {
     if(!empty($dataIn['Production']['production_item_ids']) && count($dataIn['Production']['production_item_ids'])){
       foreach($dataIn['Production']['production_item_ids'] as $v){
         $id+=1;
-        $dataToInsert['id_13']=$this->makeString($id);
+        $dataToInsert['id_13']=$this->makeNum($id);
 
         //TODO: выяснить где у Стаса наименование продукции присвоенное изготовителем
         $dataToInsert['p2_a1_2 ']=$this->makeString($v['name_of_prod']);
@@ -670,7 +673,7 @@ class FoxApi {
         if($v['production_svedeniya_ids'] && count($v['production_svedeniya_ids']))
           foreach($v['production_svedeniya_ids'] as $v1){
             $npa_izg[]=$v1['title_doc'].' '.$v1['number_doc'];
-            $this->fill134($v,$id,$dataIn['nsert']);
+            $this->fillB134($v1,$id,$dataIn['nsert']);
           }
 
         if(count($npa_izg)){
@@ -700,7 +703,7 @@ class FoxApi {
   //идентификатор продукта
   function fillB131($value,$id,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeNum($id);
     $dataToInsert['p2_a1_1']=$this->makeString($value);
     $this->insert('b131',$dataToInsert);
   }
@@ -708,7 +711,7 @@ class FoxApi {
   //наименование продукции
   function fillB132($value,$id,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeNum($id);
     $dataToInsert['p2_a1_3']=$this->makeString($value);
     $this->insert('b132',$dataToInsert);
   }
@@ -723,11 +726,9 @@ class FoxApi {
       array("p2_a1_75","p2_a1_76")
     );
 
-    //TODO: Выяснить у Стаса о количестве продукции
-
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id_13);
-    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeNum($id_13);
+    $dataToInsert['id']=$this->makeNum($id);
 
 
     $dataToInsert['p2_a1_71']=$dataIn['count'];
@@ -743,38 +744,38 @@ class FoxApi {
     $arr=preg_split('/[\,\s]+/',$dataIn['p_d_dop_svedeniya']);
     foreach($arr as $v)
       if($v){
-          $this->fill1331($v,$id,$id_13,$nsert);
+          $this->fillB1331($v,$id,$id_13,$nsert);
       };
 
     $arr=preg_split('/[\,\s]+/',$dataIn['tnved_ids']);
     foreach($arr as $v)
       if($v){
-          $this->fill1332($v,$id,$id_13,$nsert);
+          $this->fillB1332($v,$id,$id_13,$nsert);
       };
 
     $this->insert('b133',$dataToInsert);
   }
 
-  function fill1331($value, $id, $id_13, $nsert){
+  function fillB1331($value, $id, $id_13, $nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id_13);
-    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeNum($id_13);
+    $dataToInsert['id']=$this->makeNum($id);
     $dataToInsert['p2_a1_74']=$this->makeString($value);
     $this->insert('b1331',$dataToInsert);
   }
 
-  function fill1332($value, $id, $id_13, $nsert){
+  function fillB1332($value, $id, $id_13, $nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id_13);
-    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeNum($id_13);
+    $dataToInsert['id']=$this->makeNum($id);
     $dataToInsert['p2_a1_77']=$this->makeString($value);
     $this->insert('b1332',$dataToInsert);
   }
 
   //сведенья о документах, в соответствии с которыми изготовлено изделие
-  function fill134($dataIn,$id,$nsert){
+  function fillB134($dataIn,$id,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeNum($id);
 
     $dataToInsert['p2_a1_91']=$this->makeString($dataIn['title_doc']);
     $dataToInsert['p2_a1_92']=$this->makeDate($dataIn['date_of_issue']);
@@ -783,9 +784,9 @@ class FoxApi {
     $this->insert('b134',$dataToInsert);
   }
 
-  function fill135($value,$id,$nsert){
+  function fillB135($value,$id,$nsert){
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeNum($id);
 
     $arr=preg_split('/[\,\s]+/',$value);
     if(count($arr))
@@ -847,7 +848,13 @@ class FoxApi {
     };
   }
 
+  function makeNum($data){
+    return $data;
+  }
+
   function makeString($data){
+    $data=preg_replace('/^\'+/',"",stripslashes($data));
+    $data=preg_replace('/\'+$/',"",$data);
     return "'".addslashes($data)."'";
   }
 
@@ -886,7 +893,13 @@ class FoxApi {
 
 
   function applyAddress($dataIn,$prefix,$dataToInsert){
-    $dataToInsert[$prefix.'1']=$this->makeString($dataIn['adress_string']);
+    switch($dataIn['addressCode']){
+      case 'urAdress':
+        $dataToInsert[$prefix.'1']=$this->makeString('Юридический адрес');
+      break;
+      default:
+        $dataToInsert[$prefix.'1']=$this->makeString('Фактический адрес');
+    };
     $dataToInsert[$prefix.'2']=$this->makeString($dataIn['country_id']);
     $dataToInsert[$prefix.'3']=$this->makeString(" ");
     $dataToInsert[$prefix.'4']=$this->makeString($dataIn['region_id']);
@@ -897,6 +910,8 @@ class FoxApi {
     $dataToInsert[$prefix.'9']=$this->makeString($dataIn['buildingNumber']);
     $dataToInsert[$prefix.'a']=$this->makeString($dataIn['officeNumber']);
     $dataToInsert[$prefix.'b']=$this->makeString($dataIn['zipCode']);
+    $dataToInsert[$prefix.'c']=$this->makeString(' ');
+
     $dataToInsert['text']=$this->makeString($dataIn['adress_string']);
     return $dataToInsert;
   }
@@ -918,14 +933,15 @@ class FoxApi {
 
       $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$values).')';
       $this->connectDB();
+      $sql=iconv("UTF-8","Windows-1251",$sql);
       if($this->db){
-        $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
+        $this->db->Execute($sql);
       };
       $out[]=$sql;
     } catch (Exception $e){
       $out[]="Err: ".$sql."\r\n".$e->getMessage();
       $f=fopen("sql_err.txt","a");
-      fputs($f,$sql);
+      fputs($f,$sql."\r\n\r\n");
       // fputs($f,"\r\nDATA:\r\n");
       // foreach($data as $k=>$v)
       //   fputs($f,"$k=$v\r\n");

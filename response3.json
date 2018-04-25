@@ -376,8 +376,7 @@
 }
 ], "org_prav_forma_kz": "\u0421\u0435\u0440\u0456\u043a\u0442\u0435\u0441\u0442\u0456\u0433\u0456 \" \u0438\u043c\u0430\u043d"
 }
-, "Dopinfo":
-{
+, "Dopinfo": {
 "norm_doc": [
 {
 "n_d_title_doc": "n_d_title_doc ",
@@ -386,7 +385,8 @@
  "n_d_number_doc": "n_d_number_doc ",
  "result_string_kz": "n_d_title_doc  \u043e\u0442 10.04.2018\u0433. n_d_number_doc ",
  "result_string": "n_d_title_doc  \u043e\u0442 10.04.2018\u0433. n_d_number_doc ",
- "n_d_isPerechenInclude": true, "n_d_date_of_issue": "2018-04-10",
+ "n_d_isPerechenInclude": true,
+ "n_d_date_of_issue": "2018-04-10",
  "n_d_title_doc_kz": "n_d_title_doc ",
  "n_d_norm_razdel_ids": [
 {
