@@ -37,12 +37,12 @@ if(count($out)){
 }
 
 
-header('Content-type:text/html,codepage=utf-8');
+header('Content-type:text/html,codepage=windows-1251');
 echo <<<EOT
 <!DOCTYPE html>
 <html>
 <head>
-<meta codepage="utf-8">
+<meta codepage="windows-1251">
 <title></title>
 </head>
 <body>
