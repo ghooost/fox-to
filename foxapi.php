@@ -47,6 +47,9 @@ class FoxApi {
     $this->fillB21($data);
     $this->fillB211($data);
     $this->fillB11($data);
+
+    $this->fillB12($data);
+    $this->fillB14($data);
 //    print_r($itemData);
   }
 
@@ -119,28 +122,26 @@ class FoxApi {
     $dataToInsert['pole_izg']=$this->makeString($dataIn['Izgotovitel']['result_string']);//required
     $dataToInsert['pole_izgk']=$this->makeString($dataIn['Izgotovitel']['result_string_kz']);//required
 
+    $pole_prod=array();
+    $pole_tnved=array();
+    if(!empty($dataIn['Production']) && !empty($dataIn['Production']['production_item_ids']))
+      foreach($dataIn['Production']['production_item_ids'] as $v){
+        if($v['result_string'])
+          $pole_prod[]=$v['result_string'];
+          if($v['tnved_ids'])
+            $pole_tnved[]=$v['tnved_ids'];
+      };
+    $dataToInsert['pole_prod']=$this->makeString(join(", ",$pole_prod));//required
+    //TODO: узнать у Стаса результирующее поле продукции на казахском
+    $dataToInsert['pole_prodk']=$this->makeString(" ");
+    $dataToInsert['pole_tnved']=$this->makeString(join(", ",$pole_tnved));//required
+
+    //TODO: применение бланков приложения
+    $dataToInsert['pr_pril']=$this->makeString(" ");
+
+
 
     $this->insert('b10',$dataToInsert);
-  }
-
-//Таблица изготовителя
-  function fillB14($dataIn){
-    $dataToInsert=$this->emptyFields(
-      array("nsert","p2_a4_1","p2_a4_2","p2_a4_3","p2_a4_4","p2_a4_5","p2_a4_6")
-    );
-
-    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
-
-    $dataToInsert['p2_a4_1']=$this->makeString($dataIn['Izgotovitel']['root_country_id']);
-
-    $dataToInsert['p2_a4_2']=$this->makeString($dataIn['Izgotovitel']['title']);
-    $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTitle']);
-    $dataToInsert['p2_a4_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
-    $dataToInsert['p2_a4_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
-
-    $dataToInsert['p2_a4_6']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
-
-    $this->insert('b14',$dataToInsert);
   }
 
 //Сведения о документах подтверждающих соответствие
@@ -324,6 +325,8 @@ class FoxApi {
       $dataIn['Zajavitel']['fio_item_id']['patronymicName']
     );
 
+
+
     $id=0;
     if(!empty($dataIn['Zajavitel']['fillials']))
       foreach($dataIn['Zajavitel']['fillials'] as $v){
@@ -331,6 +334,19 @@ class FoxApi {
         $this->fillB120($v,$id,$dataToInsert['nsert']);
       };
 
+    if(!empty($dataIn['Zajavitel']['adress']))
+      foreach($dataIn['Zajavitel']['adress'] as $v){
+        $this->fillB121($v,$dataToInsert['nsert']);
+      };
+
+    $id=0;
+    foreach($dataIn['Zajavitel'] as $k=>$v){
+      $cType=$this->getConnectionType($k);
+      if($cType!=null){
+        $id++;
+        $this->fillB122($v,$cType['code'],$cType['name'],$id,$dataToInsert['nsert']);
+      }
+    }
 
     //TODO: наименование документа и адрес сайта для связи?
 
@@ -338,7 +354,7 @@ class FoxApi {
   }
 
 //Филиалы заявителя
-  function fillB120($dataIn,$id,$nsert){
+  function fillB120($dataIn,$id_f,$nsert){
     $dataToInsert=$this->emptyFields(
       array("nsert","id_f","p2_99_1","p2_99_2","p2_99_3","p2_99_4","p2_99_5",
         "p2_99_6","p2_99_7","p2_99_8","p2_99_9"),
@@ -348,18 +364,28 @@ class FoxApi {
 
     $dataToInsert['nsert']=$this->makeString($nsert);
 
-    $dataToInsert['id_f']=$this->makeString($id);
+    $dataToInsert['id_f']=$this->makeString($id_f);
 
     if(!empty($dataIn['address']) && count($dataIn['address'])){
       $addr="";
       foreach($dataIn['address'] as $v){
-        $this->fillB1201($v,$id,$nsert);
+        $this->fillB1201($v,$id_f,$nsert);
         if(!$addr && !empty($v['countryCode']))
           $addr=$v['countryCode'];
       };
 
       $dataToInsert['p2_99_1']=$this->makeString($addr);
     };
+
+    $id=0;
+    foreach($dataIn as $k=>$v){
+      $cType=$this->getConnectionType($k);
+      if($cType!=null){
+        $id++;
+        $this->fillB1202($v,$cType['code'],$cType['name'],$id,$id_f,$dataToInsert['nsert']);
+      }
+    }
+
 
     $dataToInsert['p2_99_2']=$this->makeString($dataIn['title']);
     $dataToInsert['p2_99_3']=$this->makeString($dataIn['shortTittle']);
@@ -371,32 +397,376 @@ class FoxApi {
   }
 
   //адреса филиалов Заявителя
-  function fillB1201($dataIn,$id,$nsert){
+  function fillB1201($dataIn,$id_f,$nsert){
+    $dataToInsert=$this->emptyFields();
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert=$this->applyAddress($dataIn,'p2_99_a_',$dataToInsert);
+    $this->insert('b1201',$dataToInsert);
+  }
+
+  //виды связи филиалов заявителя
+  function fillB1202($value, $code,$name,$id,$id_f,$nsert){
+    $arr=preg_split('/[\,\s]+/',$value);
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id_f']=$this->makeString($id_f);
+
+    if($arr && count($arr)){
+      $dataToInsert['p2_99_b_1']=$this->makeString($code);
+      $dataToInsert['p2_99_b_2']=$this->makeString($name);
+
+      $this->insert('b1202',$dataToInsert);
+
+      foreach($arr as $val)
+        if($val!="")
+          $this->fillB12021($val,$id,$id_f,$nsert);
+    };
+  }
+
+  //значения видов связи филиалов заявителя
+  function fillB12021($value,$id,$id_f,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['p2_99_b_3']=$this->makeString($value);
+
+    $this->insert('b12021',$dataToInsert);
+  }
+
+  //адреса заявителя
+  function fillB121($dataIn,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert=$this->applyAddress($dataIn,'p2_97_',$dataToInsert);
+    $this->insert('b121',$dataToInsert);
+  }
+
+  //виды связи заявителя
+  function fillB122($value, $code,$name,$id,$nsert){
+    $arr=preg_split('/[\,\s]+/',$value);
+    if($arr && count($arr)){
+      $dataToInsert['nsert']=$this->makeString($nsert);
+      $dataToInsert['id']=$this->makeString($id);
+
+      $dataToInsert['p2_96_1']=$this->makeString($code);
+      $dataToInsert['p2_96_2']=$this->makeString($name);
+
+      $this->insert('b122',$dataToInsert);
+
+      foreach($arr as $val)
+        if($val!="")
+          $this->fillB1221($val,$id,$nsert);
+    };
+  }
+
+  //значения видов связи заявителя
+  function fillB1221($value,$id,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['p2_96_3']=$this->makeString($value);
+
+    $this->insert('b1221',$dataToInsert);
+  }
+
+
+
+
+  //Таблица изготовителя
+    function fillB14($dataIn){
+      $dataToInsert=$this->emptyFields(
+        array("nsert","p2_a4_1","p2_a4_2","p2_a4_3","p2_a4_4","p2_a4_5","p2_a4_6")
+      );
+
+      $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+
+      $dataToInsert['p2_a4_1']=$this->makeString($dataIn['Izgotovitel']['root_country_id']);
+
+      $dataToInsert['p2_a4_2']=$this->makeString($dataIn['Izgotovitel']['title']);
+      $dataToInsert['p2_a4_3']=$this->makeString($dataIn['Izgotovitel']['shortTitle']);
+      $dataToInsert['p2_a4_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
+      $dataToInsert['p2_a4_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
+
+      $dataToInsert['p2_a4_6']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
+
+      $id=0;
+      if(!empty($dataIn['Izgotovitel']['fillials']))
+        foreach($dataIn['Izgotovitel']['fillials'] as $v){
+          $id++;
+          $this->fillB140($v,$id,$dataToInsert['nsert']);
+        };
+
+
+      if(!empty($dataIn['Izgotovitel']['adress']))
+        foreach($dataIn['Izgotovitel']['adress'] as $v){
+          $this->fillB141($v,$dataToInsert['nsert']);
+        };
+
+      $id=0;
+      foreach($dataIn['Izgotovitel'] as $k=>$v){
+        $cType=$this->getConnectionType($k);
+        if($cType!=null){
+          $id++;
+          $this->fillB142($v,$cType['code'],$cType['name'],$id,$dataToInsert['nsert']);
+        }
+      }
+
+      $this->insert('b14',$dataToInsert);
+    }
+
+  //филиал изготовителя
+  function fillB140($dataIn){
     $dataToInsert=$this->emptyFields(
-      array("id_f","nsert","p2_99_a_1","p2_99_a_2","p2_99_a_3","p2_99_a_4",
-      "p2_99_a_5","p2_99_a_6","p2_99_a_7","p2_99_a_8","p2_99_a_9","p2_99_a_a",
-      "p2_99_a_b","p2_99_a_c","text"),
+      array("nsert","id_f","p2_a4_91","p2_a4_92","p2_a4_93","p2_a4_94","p2_a4_95",
+        "p2_a4_96","p2_a4_97","p2_a4_98","p2_a4_99"),
       array(),
       array()
     );
 
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_f']=$this->makeString($id);
+    $dataToInsert['id_f']=$this->makeString($id_f);
 
-    $dataToInsert['p2_99_a_1']=$this->makeString($dataIn['adress_string']);
-    $dataToInsert['p2_99_a_2']=$this->makeString($dataIn['country_id']);
-    $dataToInsert['p2_99_a_3']=$this->makeString(" ");
-    $dataToInsert['p2_99_a_4']=$this->makeString($dataIn['region_id']);
-    $dataToInsert['p2_99_a_5']=$this->makeString($dataIn['aria']);
-    $dataToInsert['p2_99_a_6']=$this->makeString($dataIn['city']);
-    $dataToInsert['p2_99_a_7']=$this->makeString($dataIn['locality']);
-    $dataToInsert['p2_99_a_8']=$this->makeString($dataIn['street']);
-    $dataToInsert['p2_99_a_9']=$this->makeString($dataIn['buildingNumber']);
-    $dataToInsert['p2_99_a_a']=$this->makeString($dataIn['officeNumber']);
-    $dataToInsert['p2_99_a_b']=$this->makeString($dataIn['zipCode']);
-    $dataToInsert['text']=$this->makeString($dataIn['adress_string']);
+    if(!empty($dataIn['address']) && count($dataIn['address'])){
+      $addr="";
+      foreach($dataIn['address'] as $v){
+        $this->fillB1401($v,$id_f,$nsert);
+        if(!$addr && !empty($v['countryCode']))
+          $addr=$v['countryCode'];
+      };
 
-    $this->insert('b1201',$dataToInsert);
+      $dataToInsert['p2_a4_91']=$this->makeString($addr);
+    };
+
+    $id=0;
+    foreach($dataIn as $k=>$v){
+      $cType=$this->getConnectionType($k);
+      if($cType!=null){
+        $id++;
+        $this->fillB1402($v,$cType['code'],$cType['name'],$id,$id_f,$dataToInsert['nsert']);
+      }
+    }
+
+
+    $dataToInsert['p2_a4_92']=$this->makeString($dataIn['title']);
+    $dataToInsert['p2_a4_93']=$this->makeString($dataIn['shortTittle']);
+    $dataToInsert['p2_a4_94']=$this->makeString($dataIn['codeOpf']);
+    $dataToInsert['p2_a4_95']=$this->makeString($dataIn['org_prav_forma']);
+    $dataToInsert['p2_a4_96']=$this->makeString($dataIn['ogrn']);
+
+    $this->insert('b140',$dataToInsert);
+
+  }
+
+
+  //адреса филиалов Изготовителя
+  function fillB1401($dataIn,$id_f,$nsert){
+    $dataToInsert=$this->emptyFields();
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert=$this->applyAddress($dataIn,'p2a4_9a',$dataToInsert);
+    $this->insert('b1401',$dataToInsert);
+  }
+
+  //виды связи филиалов заявителя
+  function fillB1402($value, $code,$name,$id,$id_f,$nsert){
+    $arr=preg_split('/[\,\s]+/',$value);
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id_f']=$this->makeString($id_f);
+
+    if($arr && count($arr)){
+      $dataToInsert['p2a4_9b1']=$this->makeString($code);
+      $dataToInsert['p2a4_9b2']=$this->makeString($name);
+
+      $this->insert('b1402',$dataToInsert);
+
+      foreach($arr as $val)
+        if($val!="")
+          $this->fillB14021($val,$id,$id_f,$nsert);
+    };
+  }
+
+  //значения видов связи филиалов заявителя
+  function fillB14021($value,$id,$id_f,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['id_f']=$this->makeString($id_f);
+    $dataToInsert['p2a4_9b3']=$this->makeString($value);
+
+    $this->insert('b14021',$dataToInsert);
+  }
+
+  //адреса заявителя
+  function fillB141($dataIn,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert=$this->applyAddress($dataIn,'p2_a4_7',$dataToInsert);
+    $this->insert('b121',$dataToInsert);
+  }
+
+  //виды связи заявителя
+  //TODO: понять где виды связи
+  function fillB142($value, $code,$name,$id,$nsert){
+    $arr=preg_split('/[\,\s]+/',$value);
+    if($arr && count($arr)){
+      $dataToInsert['nsert']=$this->makeString($nsert);
+      $dataToInsert['id']=$this->makeString($id);
+
+      $dataToInsert['p2_a4_81']=$this->makeString($code);
+      $dataToInsert['p2_a4_82']=$this->makeString($name);
+
+      $this->insert('b142',$dataToInsert);
+
+      foreach($arr as $val)
+        if($val!="")
+          $this->fillB1221($val,$id,$nsert);
+    };
+  }
+
+  //значения видов связи заявителя
+  function fillB1421($value,$id,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['p2_a4_83']=$this->makeString($value);
+
+    $this->insert('b1421',$dataToInsert);
+  }
+
+  //продукция
+  function fillB13($dataIn){
+    $dataToInsert=$this->emptyFields(
+      array("nsert","id_13","p2_a1_2","p2_a1_4","p2_a1_5",
+        "p2_a1_6","p2_a1_8",
+        "tnved    ","npa_izg","npa_izgk   ","name_pr","name_prk"),
+      array(),
+      array()
+    );
+    $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
+
+    //TODO: вообще-то это капец, но так оно сделано - id_13 есть и в
+    //идентификаторе продукта, но этот ID никак не связан
+    //с ID_13 продукта
+    if(!empty($dataIn['Production']['app_form_numbers_ids']) && count($dataIn['Production']['app_form_numbers_ids'])){
+      foreach($dataIn['Production']['app_form_numbers_ids'] as $v){
+          $this->fillB131($v['numbersAppForm'],$v['idNumber'],$dataIn['nsert']);
+      }
+    }
+
+    $id=0;
+    if(!empty($dataIn['Production']['production_item_ids']) && count($dataIn['Production']['production_item_ids'])){
+      foreach($dataIn['Production']['production_item_ids'] as $v){
+        $id+=1;
+        $dataToInsert['id_13']=$this->makeString($id);
+
+        //TODO: выяснить где у Стаса наименование продукции присвоенное изготовителем
+        $dataToInsert['p2_a1_2 ']=$this->makeString($v['name_of_prod']);
+        $dataToInsert['p2_a1_4 ']=$this->makeString($v['opisanie_information']);
+        $dataToInsert['p2_a1_5']=$this->makeString($v['inaya_information']);
+        $dataToInsert['p2_a1_6']=$this->makeString($v['number_part']);
+
+        //TODO: выяснить где у Стаса европейский номер товара
+        $dataToInsert['p2_a1_8']=$this->makeString("");
+        $dataToInsert['tnved']=$this->makeString($v['tnved_ids']);
+
+        $npa_izg=array();
+        if($v['production_svedeniya_ids'] && count($v['production_svedeniya_ids']))
+          foreach($v['production_svedeniya_ids'] as $v1){
+            $npa_izg[]=$v1['title_doc'].' '.$v1['number_doc'];
+            $this->fill134($v,$id,$dataIn['nsert']);
+          }
+
+        if(count($npa_izg)){
+          $dataToInsert['npa_izg']=$this->makeString(join(", ",$npa_izg));
+        }
+
+        $dataToInsert['name_pr']=$this->makeString($v['name_of_prod']);
+        //TODO: выяснить где у Стаса название продукции на казахском
+        //$dataToInsert['name_prk']=$this->makeString($v['name_of_prod']);
+
+        $this->fillB132($v['name_of_prod'],$id,$dataIn['nsert']);
+        $this->fillB133($v,$id,$dataIn['nsert']);
+        $this->fillB135($v['tnved_ids'],$id,$dataIn['nsert']);
+
+        $this->insert('b13',$dataToInsert);
+      };
+    };
+
+  }
+
+  //идентификатор продукта
+  function fillB131($value,$id,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_13']=$this->makeString($id);
+    $dataToInsert['p2_a1_1']=$this->makeString($value);
+    $this->insert('b131',$dataToInsert);
+  }
+
+  //наименование продукции
+  function fillB132($value,$id,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_13']=$this->makeString($id);
+    $dataToInsert['p2_a1_3']=$this->makeString($value);
+    $this->insert('b132',$dataToInsert);
+  }
+
+  //количество продукции
+  function fillB133($dataIn,$id,$nsert){
+    $dataToInsert=$this->emptyFields(
+      array("nsert","id_13",
+        "p2_a1_71","p2_a1_71a","p2_a1_71b","p2_a1_72",
+        "p2_a1_73","p2_a1_75","p2_a1_76","tnved"),
+      array(),
+      array("p2_a1_75","p2_a1_76")
+    );
+
+    //TODO: Выяснить у Стаса о количестве продукции
+
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_13']=$this->makeString($id);
+
+    //$this->insert('b133',$dataToInsert);
+  }
+
+  //сведенья о документах, в соответствии с которыми изготовлено изделие
+  function fill134($dataIn,$id,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_13']=$this->makeString($id);
+
+    $dataToInsert['p2_a1_91']=$this->makeString($dataIn['title_doc']);
+    $dataToInsert['p2_a1_92']=$this->makeDate($dataIn['date_of_issue']);
+    $dataToInsert['p2_a1_93']=$this->makeDate($dataIn['number_doc']);
+
+    $this->insert('b134',$dataToInsert);
+  }
+
+  function fill135($value,$id,$nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_13']=$this->makeString($id);
+
+    $arr=preg_split('/[\,\s]+/',$value);
+    if(count($arr))
+      foreach ($arr as $v)
+        if($v){
+          $dataToInsert['p2_a1_a']=$v;
+          $this->insert('b135',$dataToInsert);
+        }
+  }
+
+
+  function getConnectionType($code){
+    switch($code){
+      case 'phone':
+        return array('code'=>'TE','name'=>'телефон');
+      break;
+      case 'faxnum':
+        return array('code'=>'FX','name'=>'факс');
+      break;
+      case 'email':
+        return array('code'=>'EM','name'=>'электронная почта');
+      break;
+      case 'website':
+        return array('code'=>'AO','name'=>'адрес сайта');
+      break;
+    }
+    return null;
   }
 
   function processList($str){
@@ -414,7 +784,6 @@ class FoxApi {
       }
     };
   }
-
 
   function chooseFromList($data,$list){
     if(empty($list[$data])){
@@ -470,6 +839,23 @@ class FoxApi {
   }
 
 
+  function applyAddress($dataIn,$prefix,$dataToInsert){
+    $dataToInsert[$prefix.'1']=$this->makeString($dataIn['adress_string']);
+    $dataToInsert[$prefix.'2']=$this->makeString($dataIn['country_id']);
+    $dataToInsert[$prefix.'3']=$this->makeString(" ");
+    $dataToInsert[$prefix.'4']=$this->makeString($dataIn['region_id']);
+    $dataToInsert[$prefix.'5']=$this->makeString($dataIn['aria']);
+    $dataToInsert[$prefix.'6']=$this->makeString($dataIn['city']);
+    $dataToInsert[$prefix.'7']=$this->makeString($dataIn['locality']);
+    $dataToInsert[$prefix.'8']=$this->makeString($dataIn['street']);
+    $dataToInsert[$prefix.'9']=$this->makeString($dataIn['buildingNumber']);
+    $dataToInsert[$prefix.'a']=$this->makeString($dataIn['officeNumber']);
+    $dataToInsert[$prefix.'b']=$this->makeString($dataIn['zipCode']);
+    $dataToInsert['text']=$this->makeString($dataIn['adress_string']);
+    return $dataToInsert;
+  }
+
+
   function emptyFields($fields,$num_fields=array(),$date_fields=array()){
     $dataToInsert=array();
     foreach($fields as $v)  $dataToInsert[$v]=$this->makeString(" ");
@@ -479,26 +865,25 @@ class FoxApi {
   }
   function insert($table,$data){
     global $out;
+    $sql="";
     try {
       $fields=array_keys($data);
       $values=array_values($data);
 
       $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$values).')';
-      $f=fopen("sql.txt","w");
-      fputs($f,$sql);
-      fputs($f,"\r\nDATA:\r\n");
-      foreach($data as $k=>$v)
-        fputs($f,"$k=$v\r\n");
-      fclose($f);
-
-      $out[]=$sql;
-
       $this->connectDB();
       if($this->db){
         $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
       };
+      $out[]=$sql;
     } catch (Exception $e){
-      $out[]="Err: ".$e->getMessage();
+      $out[]="Err: ".$sql."\r\n".$e->getMessage();
+      $f=fopen("sql_err.txt","a");
+      fputs($f,$sql);
+      // fputs($f,"\r\nDATA:\r\n");
+      // foreach($data as $k=>$v)
+      //   fputs($f,"$k=$v\r\n");
+      fclose($f);
     };
   }
 
