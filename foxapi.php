@@ -740,17 +740,35 @@ class FoxApi {
     $dataToInsert['tnved']=$this->makeString($dataIn['tnved_ids']);
 
 
-    $arr=preg_split('/[\,\s]+/',$dataIn['p_d_dop_svedeniya'];
+    $arr=preg_split('/[\,\s]+/',$dataIn['p_d_dop_svedeniya']);
     foreach($arr as $v)
       if($v){
           $this->fill1331($v,$id,$id_13,$nsert);
+      };
+
+    $arr=preg_split('/[\,\s]+/',$dataIn['tnved_ids']);
+    foreach($arr as $v)
+      if($v){
+          $this->fill1332($v,$id,$id_13,$nsert);
       };
 
     $this->insert('b133',$dataToInsert);
   }
 
   function fill1331($value, $id, $id_13, $nsert){
-    
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_13']=$this->makeString($id_13);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['p2_a1_74']=$this->makeString($value);
+    $this->insert('b1331',$dataToInsert);
+  }
+
+  function fill1332($value, $id, $id_13, $nsert){
+    $dataToInsert['nsert']=$this->makeString($nsert);
+    $dataToInsert['id_13']=$this->makeString($id_13);
+    $dataToInsert['id']=$this->makeString($id);
+    $dataToInsert['p2_a1_77']=$this->makeString($value);
+    $this->insert('b1332',$dataToInsert);
   }
 
   //сведенья о документах, в соответствии с которыми изготовлено изделие
