@@ -677,12 +677,18 @@ class FoxApi {
           $dataToInsert['npa_izg']=$this->makeString(join(", ",$npa_izg));
         }
 
+        $id_solo=0;
+        if($v['production_solo_ids'] && count($v['production_solo_ids']))
+          foreach($v['production_solo_ids'] as $v1){
+            $id_solo+=1;
+            $this->fillB133($v1,$id_solo,$id,$dataIn['nsert']);
+          }
+
         $dataToInsert['name_pr']=$this->makeString($v['name_of_prod']);
         //TODO: выяснить где у Стаса название продукции на казахском
         //$dataToInsert['name_prk']=$this->makeString($v['name_of_prod']);
 
         $this->fillB132($v['name_of_prod'],$id,$dataIn['nsert']);
-        $this->fillB133($v,$id,$dataIn['nsert']);
         $this->fillB135($v['tnved_ids'],$id,$dataIn['nsert']);
 
         $this->insert('b13',$dataToInsert);
@@ -708,9 +714,9 @@ class FoxApi {
   }
 
   //количество продукции
-  function fillB133($dataIn,$id,$nsert){
+  function fillB133($dataIn,$id,$id_13,$nsert){
     $dataToInsert=$this->emptyFields(
-      array("nsert","id_13",
+      array("nsert","id_13","id",
         "p2_a1_71","p2_a1_71a","p2_a1_71b","p2_a1_72",
         "p2_a1_73","p2_a1_75","p2_a1_76","tnved"),
       array(),
@@ -720,9 +726,31 @@ class FoxApi {
     //TODO: Выяснить у Стаса о количестве продукции
 
     $dataToInsert['nsert']=$this->makeString($nsert);
-    $dataToInsert['id_13']=$this->makeString($id);
+    $dataToInsert['id_13']=$this->makeString($id_13);
+    $dataToInsert['id']=$this->makeString($id);
 
-    //$this->insert('b133',$dataToInsert);
+
+    $dataToInsert['p2_a1_71']=$dataIn['count'];
+    $dataToInsert['p2_a1_71a']=$this->makeString($dataIn['lot_id']['title']);
+    $dataToInsert['p2_a1_71b']=$this->makeString($dataIn['lot_id']['code']);
+    $dataToInsert['p2_a1_72']=$this->makeString($dataIn['factory_number']);
+    $dataToInsert['p2_a1_73']=$this->makeString($dataIn['group_name']);
+    $dataToInsert['p2_a1_75']=$this->makeDate($dataIn['production_date']);
+    $dataToInsert['p2_a1_76']=$this->makeDate($dataIn['storage_life']);
+    $dataToInsert['tnved']=$this->makeString($dataIn['tnved_ids']);
+
+
+    $arr=preg_split('/[\,\s]+/',$dataIn['p_d_dop_svedeniya'];
+    foreach($arr as $v)
+      if($v){
+          $this->fill1331($v,$id,$id_13,$nsert);
+      };
+
+    $this->insert('b133',$dataToInsert);
+  }
+
+  function fill1331($value, $id, $id_13, $nsert){
+    
   }
 
   //сведенья о документах, в соответствии с которыми изготовлено изделие
