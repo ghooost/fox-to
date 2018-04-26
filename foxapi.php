@@ -14,50 +14,6 @@ class FoxApi {
     $this->debugMode=$debugMode;
   }
 
-  function connectDB(){
-    if(!$this->db){
-      $this->db = new COM("ADODB.Connection") or die("Cannot start ADO");
-      $this->db->Open($this->connStr);
-    };
-  }
-
-  function closeDB(){
-    $this->db->Close();
-    $this->db=null;
-  }
-
-  function saveData($str){
-    $data=json_decode($str,TRUE);
-    foreach($data['items'] as $v){
-      $this->insertItem($v);
-    };
-  }
-
-  function insertItem($data){
-//    foreach($data['OtherInfo'] as $k=>$v) echo $k,'=>',$v,'<br>';
-    // $itemData=array();
-    // $this->processRootSection($data,$itemData);
-    $data['base_id']=$this->makeDocId($data);
-    $data['nsert']=date('Y').$this->makeDocId($data);
-    $this->fillB10($data);
-    //TODO: remove this return!
-    //return;
-    $this->fillB14($data);
-    $this->fillB16($data);
-    $this->fillB17($data);
-
-    $this->fillB18($data);
-    $this->fillB19($data);
-    $this->fillB21($data);
-    //$this->fillB211($data);
-    $this->fillB11($data);
-
-    $this->fillB12($data);
-    $this->fillB14($data);
-    $this->fillB13($data);
-//    print_r($itemData);
-  }
-
   function fillB10($dataIn){
     $dataToInsert=$this->emptyFields(
       array("nsert","p2_1","p2_2","p2_3","p2_4","p2_5","p2_7","p2_8_3","zayv",
@@ -160,19 +116,19 @@ class FoxApi {
     );
 
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
-    //
-    // if($dataIn['Osnovanie'] && $dataIn['Osnovanie']['essential_documents_ids'])
-    //   foreach($dataIn['Osnovanie']['essential_documents_ids'] as $v){
-    //     $dataToInsert['p2_b_1']=$this->makeString($v['documentName']);
-    //     $dataToInsert['p2_b_2']=$this->makeDate($v['registrationDate']);
-    //     $dataToInsert['p2_b_3']=$this->makeString($v['shortTittle']);
-    //     $dataToInsert['p2_b_4']=$this->makeString($v['codeOpf']);
-    //     $dataToInsert['p2_b_5']=$this->makeString($v['org_prav_forma']);
-    //     $dataToInsert['p2_b_6']=$this->makeString($v['ogrn']);
-    //     $dataToInsert['p2_b_7']=$this->makeString($v['ogrn']);
-    //     $dataToInsert['p2_b_8']=$this->makeString($v['ogrn']);
-    //   //  $this->insert('b16',$dataToInsert);
-    //   }
+
+    if($dataIn['Osnovanie'] && $dataIn['Osnovanie']['essential_documents_ids'])
+      foreach($dataIn['Osnovanie']['essential_documents_ids'] as $v){
+        $dataToInsert['p2_b_1']=$this->makeString($v['documentName']);
+        $dataToInsert['p2_b_2']=$this->makeDate($v['dateOfIssue']);
+        $dataToInsert['p2_b_3']=$this->makeString($v['simvolName']);
+        $dataToInsert['p2_b_4']=$this->makeString($v['subjectName']);
+        $dataToInsert['p2_b_5']=$this->makeString($v['agencyNumber']);
+        $dataToInsert['p2_b_6']=$this->makeString($v['documentNumber']);
+        $dataToInsert['p2_b_7']=$this->makeDate($v['registrationDate']);
+        $dataToInsert['p2_b_8']=$this->makeString($v['additionalInfo']);
+        $this->insert('b16',$dataToInsert);
+      }
   }
 
 //Требования
@@ -842,6 +798,8 @@ class FoxApi {
       $body=$this->queryData("/api/getItem?id=".$id);
       $itemData=json_decode($body,TRUE);
       $this->insertItem($itemData);
+    } catch (RuntimeException $e){
+      throw $e;
     } catch(Exception $e) {
       $out[]=$e->getMessage();
     }
@@ -952,6 +910,7 @@ class FoxApi {
     foreach($date_fields as $v)  $dataToInsert[$v]=$this->makeDate();
     return $dataToInsert;
   }
+
   function insert($table,$data){
     foreach($data as $key=>$value){
       $value_loc="";
@@ -959,7 +918,7 @@ class FoxApi {
         $value_loc=iconv('UTF-8','Windows-1251',$value);
         //$value_loc=$value;
       } catch (Exception $e){
-        $this->out("<b>Err in decoding:</b> ".$value."\r\n".$e->getMessage());
+        $this->err($e->getMessage()."<br>".$value,"Ошибка декодирования");
         $value_loc="";
       };
       if($value_loc===null || $value_loc===''){
@@ -977,8 +936,10 @@ class FoxApi {
         $this->db->Execute($sql);
       };
       //$this->out("<b>DONE:</b> ".$sql);
+    } catch (RuntimeException $e){
+      throw $e;
     } catch (Exception $e){
-      $this->out("<b>Err:</b>\r\n".$e->getMessage()."\r\n<br>".$sql.'<hr>');
+      $this->err($e->getMessage()."<br>".iconv("Windows-1251","UTF-8",$sql),"Ошибка исполнения SQL");
     };
   }
 
@@ -995,7 +956,7 @@ class FoxApi {
       $response = curl_exec($ch);
       curl_close($ch);
     } catch(Exception $e) {
-      throw new Exception("Curl error at ".$this->apiURL.$url.": ".$e->getMessage());
+      throw new Exception("Невозможно получить данные ".$e->getMessage()."<br>".$this->apiURL.$url);
     };
     return $response;
   }
@@ -1017,6 +978,61 @@ class FoxApi {
   function out($str){
     global $out;
     $out[]=$str;
+  }
+
+  function err($str,$title=""){
+    global $out;
+    if($title) $str='<b>'.$title.':</b> '.$str;
+    $out[]='<div class="err">'.$str."</div>";
+  }
+
+  function connectDB(){
+    if(!$this->db){
+      if(class_exists('COM')){
+        $this->db = new COM("ADODB.Connection");
+        $this->db->Open($this->connStr);
+      } else {
+        throw new RuntimeException('Невозможно установить соединение с базой данных FoxPro. Работа программы прервана.');
+      }
+    };
+  }
+
+  function closeDB(){
+    $this->db->Close();
+    $this->db=null;
+  }
+
+  function saveData($str){
+    $data=json_decode($str,TRUE);
+    foreach($data['items'] as $v){
+      $this->insertItem($v);
+    };
+  }
+
+  function insertItem($data){
+    $data['base_id']=$this->makeDocId($data);
+    $data['nsert']=date('Y').$this->makeDocId($data);
+
+    $this->out("Получен документ ".$data['base_id']);
+
+    $this->fillB10($data);
+    //TODO: remove this return!
+    //return;
+    $this->fillB14($data);
+    $this->fillB16($data);
+    $this->fillB17($data);
+
+    $this->fillB18($data);
+    $this->fillB19($data);
+    $this->fillB21($data);
+    //$this->fillB211($data);
+    $this->fillB11($data);
+
+    $this->fillB12($data);
+    $this->fillB14($data);
+    $this->fillB13($data);
+//    print_r($itemData);
+    $this->out("Документ ".$data['base_id']." сохранен в базе данных FoxPro");
   }
 
 }

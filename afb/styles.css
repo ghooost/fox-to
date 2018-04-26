@@ -1,0 +1,181 @@
+html {
+  display:block;
+  height:100%;
+}
+
+body {
+  display:block;
+  height:100%;
+  margin:0;
+  padding:0;
+  font-size:16px;
+  line-height:1.2em;
+  font-family:Arial,sans-serif;
+  color:#888;
+  background-color:#eee;
+}
+
+.wrapper {
+  min-height:100%;
+  box-sizing: border-box;
+  padding-bottom:70px;
+}
+
+.header {
+  height:90px;
+  background:#fff;
+  padding:10px 40px;
+  box-sizing: border-box;
+  z-index:2;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  position:relative;
+}
+
+.header::after {
+  display:block;
+  height:0;
+  content:'';
+  clear:both;
+}
+
+.logo {
+  display:block;
+  height:70px;
+  width:147px;
+  float:left;
+}
+
+.info {
+  display:block;
+  float:right;
+  white-space: nowrap;
+  text-align:right;
+  padding-top:16px;
+}
+
+h1 {
+  margin:0;
+  font-weight:100;
+}
+
+.info_note {
+  display:block;
+  margin-top:0.75em;
+  font-size:80%;
+}
+
+.footer {
+  color:#aaa;
+  text-align:center;
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:70px;
+  box-sizing: border-box;
+  padding-top:20px;
+}
+
+.phone_item {
+  padding:0 1em;
+}
+
+.copy {
+  margin-top:0.75em;
+  font-size:80%;
+}
+
+.phones {
+  font-size:200%;
+}
+
+.buttons {
+  display:block;
+  background:#fff;
+  white-space: nowrap;
+}
+
+.buttons::after {
+  display:block;
+  height:0;
+  content:'';
+  clear:both;
+}
+
+
+.cont {
+  float:left;
+  width:50%;
+  box-sizing: border-box;
+  text-align:center;
+  padding:50px;
+  background-image:linear-gradient(0deg,#eee,#fafafa);
+}
+
+.button {
+  display:inline-block;
+  font-size:120%;
+  padding:0.8em 1.5em;
+  border-radius:6px;
+  background:#2a2;
+  color:#fff;
+  cursor:pointer;
+  text-decoration:none;
+  box-shadow: 4px 4px 4px rgba(0,0,0,0.2),-2px -2px rgba(0,0,0,0.1);
+}
+
+.field {
+  padding:50px;
+  display:none;
+  min-height:200px;
+}
+
+.note {
+  margin-bottom:1em;
+}
+
+.note .center {
+  text-align:center;
+}
+
+.err {
+  color:#a00;
+}
+
+/*modes!*/
+
+.request_list .download_tab {
+  background:#eee;
+}
+
+.request_list .upload_tab {
+  background:#bbb;
+  box-shadow: inset 10px 0px 10px rgba(0,0,0,0.2);
+}
+
+.request_list .download {
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
+
+.request_list .field {
+  display:block;
+  text-align:left;
+}
+
+.send_list .field {
+  display:block;
+  text-align:right;
+}
+
+.send_list .download_tab {
+  background:#bbb;
+  box-shadow: inset -10px 0px 10px rgba(0,0,0,0.2);
+}
+
+.send_list .upload_tab {
+  background:#eee;
+}
+
+.send_list .upload {
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
