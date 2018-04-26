@@ -1,4 +1,16 @@
 <?php
+
+set_error_handler('exceptions_error_handler');
+
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+  if (error_reporting() == 0) {
+    return;
+  }
+  if (error_reporting() & $severity) {
+    throw new ErrorException($message, 0, $severity, $filename, $lineno);
+  }
+}
+
 $out=array();
 $err=array();
 $sql='';
@@ -16,10 +28,17 @@ try {
       $api->processList($api->queryData("/api/getList"));
       //$api->saveData($testJSON);
     break;
+    case "request_item":
+      $api->processItem(6);
+    break;
+    case "geturl":
+      $data=$api->queryData('/api/getItem?id=6');
+      $out[]=print_r(json_decode($data,TRUE),TRUE);
+    break;
     case "test":
-      $testJSON=join("",file("response2.json"));
-      $api->saveData($testJSON);
-      $api->closeDB();
+      $sql=join("",file("test.sql"));
+      $api->sql($sql);
+
     break;
   };
 } catch (Exception $e){
@@ -49,6 +68,18 @@ echo <<<EOT
 <h2>Request list</h2>
 <form action="server.php">
 <input type="hidden" name="mode" value="request_list">
+<button>Do request</button>
+</form>
+<hr>
+<h2>Request item</h2>
+<form action="server.php">
+<input type="hidden" name="mode" value="request_item">
+<button>Do request</button>
+</form>
+<hr>
+<h2>Request URL</h2>
+<form action="server.php">
+<input type="hidden" name="mode" value="geturl">
 <button>Do request</button>
 </form>
 <hr>

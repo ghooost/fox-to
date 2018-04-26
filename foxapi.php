@@ -3,7 +3,8 @@ class FoxApi {
   function __construct($debugMode=false, $dbConnect="",$apiURL=""){
     $def=array(
       "dbConnect"=>"Provider = VFPOLEDB.1; Data Source = \"C:\\Users\\Dev\\Desktop\\FoxProProj\\db_test\\a0a.dbf\"",
-      "apiURL"=>"http://192.168.3.54:5002"
+      "apiURL"=>"http://93.174.132.171:5002"
+//      "apiURL"=>"http://192.168.3.54:5002"
     );
 
     $this->connStr=$dbConnect!=""?$dbConnect:$def['dbConnect'];
@@ -39,9 +40,12 @@ class FoxApi {
     $data['base_id']=$this->makeDocId($data);
     $data['nsert']=date('Y').$this->makeDocId($data);
     $this->fillB10($data);
+    //TODO: remove this return!
+    //return;
     $this->fillB14($data);
     $this->fillB16($data);
     $this->fillB17($data);
+
     $this->fillB18($data);
     $this->fillB19($data);
     $this->fillB21($data);
@@ -63,7 +67,7 @@ class FoxApi {
       "pole_izg","pole_izgk","pole_prod","pole_prodk","pole_tnved","pr_pril",
       "pole_npa","pole_npak","pole_osn","pole_osnk","pole_dop","pole_dopk",
       "pole_exp","pole_expk","stat_otpr","dt_st_otpr","stat_pol"),
-      array(),
+      array("p2_8_3","p2_a_2","p2_c","p2_g"),
       array("p2_3","p2_4","p2_5","p2_k2_2","p2_k_3","p2_k_4","dt_st_otpr")
     );
 
@@ -72,18 +76,19 @@ class FoxApi {
     $dataToInsert['p2_4']=$this->makeDate($dataIn['OtherInfo']['start_date']);
     $dataToInsert['p2_5']=$this->makeDate($dataIn['OtherInfo']['end_date']);
 
-    //TODO: получить blank id Subtopic1?
-    $dataToInsert['p2_7']=$this->makeString(" ");//required
-
-    //TODO: количество листов в приложении - где?
-    $dataToInsert['p2_8_3']=0;//required
-
+    //
+    // //TODO: получить blank id Subtopic1?
+    // $dataToInsert['p2_7']=$this->makeString(" ");//required
+    //
+    // //TODO: количество листов в приложении - где?
+    // $dataToInsert['p2_8_3']=0;//required
+    //
     $dataToInsert['zayv']=$this->makeString($dataIn['Zajavitel']['result_string']);//required
-
-    $dataToInsert['prod']=$this->makeString(" ");//required
-
-    //TODO: понять что такое p2_a_2
-    $dataToInsert['p2_a_2']=0;//required
+    //
+    // $dataToInsert['prod']=$this->makeString(" ");//required
+    //
+    // //TODO: понять что такое p2_a_2
+    // $dataToInsert['p2_a_2']=0;//required
     $dataToInsert['p2_a_3']=
       $this->chooseFromList(
         $dataIn['Production']['ProductType'],
@@ -93,12 +98,12 @@ class FoxApi {
           'Single'=>'единичное изделие'
         )
       );
-
-    //TODO: понять что такое p2_c
-    $dataToInsert['p2_c']=0;//required
-
-
-    //TODO: спросить где в данных  Признак включения продукции в единый перечень
+    //
+    // //TODO: понять что такое p2_c
+    // $dataToInsert['p2_c']=0;//required
+    //
+    //
+    // //TODO: спросить где в данных  Признак включения продукции в единый перечень
     $dataToInsert['priznak']=
     $this->chooseFromList(
       $dataIn['OtherInfo']['productOnPerechen'],
@@ -108,13 +113,13 @@ class FoxApi {
         '2'=>'Продукция включена в единый перечень (по Решению КТС № 620)'
       )
     );
-
-    //TODO: понять что такое p2_g
-    $dataToInsert['p2_g']=0;//required
-
-    //TODO: понять что такое p2_h
-    $dataToInsert['p2_h']=$this->makeString(" ");//required
-
+    //
+    // //TODO: понять что такое p2_g
+    // $dataToInsert['p2_g']=0;//required
+    //
+    // //TODO: понять что такое p2_h
+    // $dataToInsert['p2_h']=$this->makeString(" ");//required
+    //
     $dataToInsert['p2_i']=$this->makeString($dataIn['Production']['shema_id']);
 
     $dataToInsert['pole_zay']=$this->makeString($dataIn['Zajavitel']['result_string']);//required
@@ -141,6 +146,7 @@ class FoxApi {
     $dataToInsert['pr_pril']=$this->makeString(" ");
 
 
+//    $this->out(print_r($dataToInsert,true));
 
     $this->insert('b10',$dataToInsert);
   }
@@ -154,18 +160,19 @@ class FoxApi {
     );
 
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
-    //TODO: узнать где Сведения о документах подтверждающих соответствие
-    //вроде бы никаких essential_documents_ids не видать
-    // $dataToInsert['p2_b_1']=$this->makeString("KZ");
-    // $dataToInsert['p2_b_2']=$this->makeString($dataIn['Izgotovitel']['title']);
-    // $dataToInsert['p2_b_3']=$this->makeString($dataIn['Izgotovitel']['shortTittle']);
-    // $dataToInsert['p2_b_4']=$this->makeString($dataIn['Izgotovitel']['codeOpf']);
-    // $dataToInsert['p2_b_5']=$this->makeString($dataIn['Izgotovitel']['org_prav_forma']);
-    // $dataToInsert['p2_b_6']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
-    // $dataToInsert['p2_b_7']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
-    // $dataToInsert['p2_b_8']=$this->makeString($dataIn['Izgotovitel']['ogrn']);
     //
-    // $this->insert('b16',$dataToInsert);
+    // if($dataIn['Osnovanie'] && $dataIn['Osnovanie']['essential_documents_ids'])
+    //   foreach($dataIn['Osnovanie']['essential_documents_ids'] as $v){
+    //     $dataToInsert['p2_b_1']=$this->makeString($v['documentName']);
+    //     $dataToInsert['p2_b_2']=$this->makeDate($v['registrationDate']);
+    //     $dataToInsert['p2_b_3']=$this->makeString($v['shortTittle']);
+    //     $dataToInsert['p2_b_4']=$this->makeString($v['codeOpf']);
+    //     $dataToInsert['p2_b_5']=$this->makeString($v['org_prav_forma']);
+    //     $dataToInsert['p2_b_6']=$this->makeString($v['ogrn']);
+    //     $dataToInsert['p2_b_7']=$this->makeString($v['ogrn']);
+    //     $dataToInsert['p2_b_8']=$this->makeString($v['ogrn']);
+    //   //  $this->insert('b16',$dataToInsert);
+    //   }
   }
 
 //Требования
@@ -179,8 +186,8 @@ class FoxApi {
     if(!empty($dataIn['Trebovaniya']) && !empty($dataIn['Trebovaniya']['reglament_ids']))
       foreach($dataIn['Trebovaniya']['reglament_ids'] as $v){
         $dataToInsert['p2_d']=$this->makeString($v['number']);
-        $dataToInsert['name_tr']=$this->makeString($v['name']);
-        $dataToInsert['name_trk']=$this->makeString($v['name_kz']);
+        //$dataToInsert['name_tr']=$this->makeString($v['name']);
+        //$dataToInsert['name_trk']=$this->makeString($v['name_kz']);
 
         $this->insert('b17',$dataToInsert);
       };
@@ -226,15 +233,8 @@ class FoxApi {
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
     if(!empty($dataIn['Dopinfo']) && !empty($dataIn['Dopinfo']['norm_doc']))
       foreach($dataIn['Dopinfo']['norm_doc'] as $v){
-        $dataToInsert['id']=$id;
-        $dataToInsert['p2_j_2']=
-          $this->chooseFromList(
-            $v['n_d_isPerechenInclude'],
-            array(
-              '1'=>'Да',
-              '0'=>'Нет'
-            )
-          );
+        $dataToInsert['id']=$this->makeNum($id);
+        $dataToInsert['p2_j_2']=$this->makeBool($v['n_d_isPerechenInclude']);
         $dataToInsert['p2_j_3']=$this->makeString($v['n_d_title_doc']);
         $dataToInsert['p2_j_4']=$this->makeString($v['n_d_number_doc']);
         $dataToInsert['p2_j_5']=$this->makeDate($v['n_d_date_of_issue']);
@@ -274,7 +274,7 @@ class FoxApi {
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
     if(!empty($dataIn['Production']) && !empty($dataIn['Production']['app_form_numbers_ids']))
       foreach($dataIn['Production']['app_form_numbers_ids'] as $v){
-        $dataToInsert['p2_8_1']=$this->makeString($v['idNumber']);
+        $dataToInsert['p2_8_1']=$this->makeNum($v['idNumber']);
         $dataToInsert['p2_8_2']=$this->makeString($v['numbersAppForm']);
 
         $this->insert('b11',$dataToInsert);
@@ -283,14 +283,16 @@ class FoxApi {
 
 //Заявитель
   function fillB12($dataIn){
+
     $dataToInsert=$this->emptyFields(
       array("nsert","p2_9_1","p2_9_2","p2_9_3","p2_9_4","p2_9_5","p2_9_6",
         "p2_9a_11","p2_9a_12","p2_9a_13","p2_9a_2","i_k","o_k","f_k","d_k",
-        "ir","or","fr","dr","ir_k","or_k","fr_k","dr_k","ruk","p2_9a_41",
+        "ir","`or`","fr","dr","ir_k","or_k","fr_k","dr_k","ruk","p2_9a_41",
         "p2_9a_42","p2_9a_43"),
       array(),
       array("p2_9a_42")
     );
+
     $dataToInsert['nsert']=$this->makeString($dataIn['nsert']);
 
     $dataToInsert['p2_9_1']=$this->makeString($dataIn['Zajavitel']['root_country_id']);
@@ -309,20 +311,29 @@ class FoxApi {
     $dataToInsert['f_k']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['surName_kz']);
     $dataToInsert['d_k']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['post_id']['post_im_pad_kz']);
 
+
     $dataToInsert['dr']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['post_id']['post_rd_pad']);
     $dataToInsert['ir']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_name']);
-    $dataToInsert['or']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_patronymicName']);
+    $dataToInsert['`or`']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_patronymicName']);
     $dataToInsert['fr']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_surName']);
+
+
+
+
 
     $dataToInsert['dr_k']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['post_id']['post_rd_pad_kz']);
     $dataToInsert['ir_k']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_name_kz']);
+
     $dataToInsert['or_k']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_patronymicName_kz']);
     $dataToInsert['fr_k']=$this->makeString($dataIn['Zajavitel']['fio_item_id']['rd_surName_kz']);
 
+//    echo iconv('utf-8','windows-1251',$dataToInsert['dr_k']."<br>".$dataToInsert['ir_k'].'<br>'.$dataToInsert['or_k']."<br>".$dataToInsert['fr_k'].'<br>');
+
+
     $dataToInsert['ruk']=$this->makeString(
-      $dataIn['Zajavitel']['fio_item_id']['post_id']['post_im_pad'].
-      $dataIn['Zajavitel']['fio_item_id']['surName'].
-      $dataIn['Zajavitel']['fio_item_id']['name'].
+      $dataIn['Zajavitel']['fio_item_id']['post_id']['post_im_pad'].' '.
+      $dataIn['Zajavitel']['fio_item_id']['surName'].' '.
+      $dataIn['Zajavitel']['fio_item_id']['name'].' '.
       $dataIn['Zajavitel']['fio_item_id']['patronymicName']
     );
 
@@ -638,7 +649,7 @@ class FoxApi {
     $dataToInsert=$this->emptyFields(
       array("nsert","id_13","p2_a1_2","p2_a1_4","p2_a1_5",
         "p2_a1_6","p2_a1_8",
-        "tnved    ","npa_izg","npa_izgk   ","name_pr","name_prk"),
+        "tnved","npa_izg","npa_izgk","name_pr","name_prk"),
       array(),
       array()
     );
@@ -660,13 +671,13 @@ class FoxApi {
         $dataToInsert['id_13']=$this->makeNum($id);
 
         //TODO: выяснить где у Стаса наименование продукции присвоенное изготовителем
-        $dataToInsert['p2_a1_2 ']=$this->makeString($v['name_of_prod']);
-        $dataToInsert['p2_a1_4 ']=$this->makeString($v['opisanie_information']);
+        $dataToInsert['p2_a1_2']=$this->makeString($v['name_of_prod']);
+        $dataToInsert['p2_a1_4']=$this->makeString($v['opisanie_information']);
         $dataToInsert['p2_a1_5']=$this->makeString($v['inaya_information']);
         $dataToInsert['p2_a1_6']=$this->makeString($v['number_part']);
 
         //TODO: выяснить где у Стаса европейский номер товара
-        $dataToInsert['p2_a1_8']=$this->makeString("");
+        $dataToInsert['p2_a1_8']=$this->makeString(" ");
         $dataToInsert['tnved']=$this->makeString($v['tnved_ids']);
 
         $npa_izg=array();
@@ -720,7 +731,7 @@ class FoxApi {
   function fillB133($dataIn,$id,$id_13,$nsert){
     $dataToInsert=$this->emptyFields(
       array("nsert","id_13","id",
-        "p2_a1_71","p2_a1_71a","p2_a1_71b","p2_a1_72",
+        "p2_a1_71","p2_a171a","p2_a171b","p2_a1_72",
         "p2_a1_73","p2_a1_75","p2_a1_76","tnved"),
       array(),
       array("p2_a1_75","p2_a1_76")
@@ -732,8 +743,8 @@ class FoxApi {
 
 
     $dataToInsert['p2_a1_71']=$dataIn['count'];
-    $dataToInsert['p2_a1_71a']=$this->makeString($dataIn['lot_id']['title']);
-    $dataToInsert['p2_a1_71b']=$this->makeString($dataIn['lot_id']['code']);
+    $dataToInsert['p2_a171a']=$this->makeString($dataIn['lot_id']['title']);
+    $dataToInsert['p2_a171b']=$this->makeString($dataIn['lot_id']['code']);
     $dataToInsert['p2_a1_72']=$this->makeString($dataIn['factory_number']);
     $dataToInsert['p2_a1_73']=$this->makeString($dataIn['group_name']);
     $dataToInsert['p2_a1_75']=$this->makeDate($dataIn['production_date']);
@@ -792,7 +803,7 @@ class FoxApi {
     if(count($arr))
       foreach ($arr as $v)
         if($v){
-          $dataToInsert['p2_a1_a']=$v;
+          $dataToInsert['p2_a1_a']=$this->makeString($v);
           $this->insert('b135',$dataToInsert);
         }
   }
@@ -818,18 +829,22 @@ class FoxApi {
 
   function processList($str){
     global $out;
-    print_r($str);
+    //print_r($str);
     $data=json_decode($str,TRUE);
-    print_r($data);
+    //print_r($data);
     foreach($data['ids'] as $v){
-      try {
-        $body=$this->queryData("/api/getItem?id=".$v);
-        $itemData=json_decode($body,TRUE);
-        $this->insertItem($itemData);
-      } catch(Exception $e) {
-        $out[]=$e->getMessage();
-      }
+      $this->processItem($v);
     };
+  }
+
+  function processItem($id){
+    try {
+      $body=$this->queryData("/api/getItem?id=".$id);
+      $itemData=json_decode($body,TRUE);
+      $this->insertItem($itemData);
+    } catch(Exception $e) {
+      $out[]=$e->getMessage();
+    }
   }
 
   function chooseFromList($data,$list){
@@ -852,14 +867,27 @@ class FoxApi {
     return $data;
   }
 
+  function makeBool($data){
+    if($data=='Да' || $data=='да' || $data=='ДА'){
+      return 1;
+    } else {
+      return 0;
+    };
+  }
+
+
   function makeString($data){
     $data=preg_replace('/^\'+/',"",stripslashes($data));
     $data=preg_replace('/\'+$/',"",$data);
-    return "'".addslashes($data)."'";
+    $data=preg_replace('/\'/','\'',$data);
+    return "'".$data."'";
+    //return "'".addslashes($data)."'";
   }
 
   function makeDocId($dataIn){
     //TODO: выяснить правильный вариант генерации docid
+    //
+    $dataIn['OtherInfo']['reg_number_full_string']='';
     if(!empty($dataIn['OtherInfo']['reg_number_full_string'])){
       return $dataIn['OtherInfo']['reg_number_full_string'];
     } else {
@@ -925,32 +953,38 @@ class FoxApi {
     return $dataToInsert;
   }
   function insert($table,$data){
-    global $out;
-    $sql="";
-    try {
-      $fields=array_keys($data);
-      $values=array_values($data);
+    foreach($data as $key=>$value){
+      $value_loc="";
+      try {
+        $value_loc=iconv('UTF-8','Windows-1251',$value);
+        //$value_loc=$value;
+      } catch (Exception $e){
+        $this->out("<b>Err in decoding:</b> ".$value."\r\n".$e->getMessage());
+        $value_loc="";
+      };
+      if($value_loc===null || $value_loc===''){
+        $value_loc="' '";
+      };
+      $fields[]=$key;
+      $values[]=$value_loc;
+    };
 
+    try {
       $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$values).')';
+      //$out[]='<b>FORM:</b>'.$sql;
       $this->connectDB();
-      $sql=iconv("UTF-8","Windows-1251",$sql);
       if($this->db){
         $this->db->Execute($sql);
       };
-      $out[]=$sql;
+      //$this->out("<b>DONE:</b> ".$sql);
     } catch (Exception $e){
-      $out[]="Err: ".$sql."\r\n".$e->getMessage();
-      $f=fopen("sql_err.txt","a");
-      fputs($f,$sql."\r\n\r\n");
-      // fputs($f,"\r\nDATA:\r\n");
-      // foreach($data as $k=>$v)
-      //   fputs($f,"$k=$v\r\n");
-      fclose($f);
+      $this->out("<b>Err:</b>\r\n".$e->getMessage()."\r\n<br>".$sql.'<hr>');
     };
   }
 
   function sql($sql){
-    return $this->db->Execute($sql);
+    $this->connectDB();
+    return $this->db->Execute(iconv("UTF-8","Windows-1251",$sql));
   }
 
   function queryData($url=""){
@@ -979,6 +1013,12 @@ class FoxApi {
     curl_close($ch);
     return $response;
   }
+
+  function out($str){
+    global $out;
+    $out[]=$str;
+  }
+
 }
 
 function HandleHeaderLine( $curl, $header_line ) {
