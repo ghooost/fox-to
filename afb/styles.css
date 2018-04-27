@@ -19,6 +19,7 @@ body {
   min-height:100%;
   box-sizing: border-box;
   padding-bottom:70px;
+  position:relative;
 }
 
 .header {
@@ -128,6 +129,7 @@ h1 {
   padding:50px;
   display:none;
   min-height:200px;
+  word-wrap: break-word;
 }
 
 .note {

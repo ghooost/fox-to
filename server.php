@@ -58,7 +58,7 @@ if(count($out)){
 }
 
 
-header('Content-type:text/html,codepage=utf-8');
+header('Content-type: text/html, codepage=utf-8');
 $styles=join('',file('afb/styles.css'));
 $styles.=join('',file('afb/logo.css'));
 echo <<<EOT
@@ -66,6 +66,7 @@ echo <<<EOT
 <html>
 <head>
 <meta codepage="utf-8">
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <title>АДВАНС/FoxPro синхронизатор</title>
 <style>
 $styles
