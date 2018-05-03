@@ -29,6 +29,11 @@ try {
       $out[]="<b>Здесь будет загрузка отправленных сообщений из FoxPro в АДВАНС.</b>";
       $out[]="Работаем над этим.";
     break;
+    case "check":
+      $data=$api->sql("select nsert='2018ЕАЭС.KZ.7500052.22.01.00001' from b10");
+      print_r($data);
+      exit();
+    break;
     //
     // case "request_item":
     //   $api->processItem(6);

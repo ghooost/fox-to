@@ -1041,10 +1041,6 @@ class FoxApi {
 
     $this->out("Получен документ ".$data['base_id']);
 
-    $data=$this->sql("select nsert='".$data['nsert']."' from b10");
-    print_r($data);
-    return;
-
 
     if($this->fillB10($data)){
       $this->fillB14($data);
