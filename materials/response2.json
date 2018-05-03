@@ -1,0 +1,358 @@
+{
+  "count": 1,
+  "items": [
+   {
+     "Izgotovitel": {
+       "org_prav_forma": "\u0422\u043e\u0432\u0430\u0440\u0438\u0449\u0435\u0441\u0442\u0432\u043e \u043d\u0430 \u0432\u0435\u0440\u0435",
+       "shortTittle_kz": "\u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+       "ogrn_kz": "123467891",
+       "title": "\u0422\u043e\u0432\u0430\u0440\u0438\u0449\u0435\u0441\u0442\u0432\u043e \u043d\u0430 \u0432\u0435\u0440\u0435 \u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+       "faxnum": "+7999815894",
+       "ogrn": "123467891",
+       "address_is_same": true,
+       "phone": "+7999815894",
+       "title_kz": "\u0422\u043e\u0432\u0430\u0440\u0438\u0449\u0435\u0441\u0442\u0432\u043e \u043d\u0430 \u0432\u0435\u0440\u0435 \u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+       "shortTittle": "\u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+       "codeOpf": "",
+       "adress": [
+         {
+           "buildingNumber_kz": "buildingNumber 12",
+           "region_id": "",
+           "countryCode": "KZ",
+           "zipCode_kz": "17236254",
+           "city_kz": "\u0410\u043b\u043c\u0430\u0442\u044b",
+           "street_kz": "\u0443\u043b\u0438\u0446\u0430",
+           "street": "\u0443\u043b\u0438\u0446\u0430",
+           "adress_string": "",
+           "city": "\u0410\u043b\u043c\u0430\u0442\u044b",
+           "locality_kz": "locality ",
+           "locality": "locality ",
+           "aria_kz": "aria ",
+           "aria": "aria ",
+           "country_id": "KZ",
+           "addressCode": "urAdress",
+           "zipCode": "17236254",
+           "adress_string_kz": "",
+           "officeNumber_kz": "officeNumber ",
+           "officeNumber": "officeNumber ",
+           "country_id_kz": "\u049a\u0410\u0417\u0410\u049a\u0421\u0422\u0410\u041d",
+           "region_id_kz": "",
+           "buildingNumber": "buildingNumber 12"
+         },
+        {
+          "buildingNumber_kz": "buildingNumber ",
+          "region_id": "",
+          "countryCode": "KZ",
+          "zipCode_kz": "1497874",
+          "city_kz": "city ",
+          "street_kz": "street ",
+          "street": "street ",
+          "adress_string": "",
+          "city": "city ",
+          "locality_kz": "locality ",
+          "locality": "locality ",
+          "aria_kz": "aria ",
+          "aria": "aria ",
+          "country_id": "KZ",
+          "addressCode": "actualAdress",
+          "zipCode": "1497874",
+          "adress_string_kz": "",
+          "officeNumber_kz": "officeNumber ",
+          "officeNumber": "officeNumber ",
+          "country_id_kz": "\u049a\u0410\u0417\u0410\u049a\u0421\u0422\u0410\u041d",
+          "region_id_kz": "",
+          "buildingNumber": "buildingNumber "
+        },
+        {
+          "buildingNumber_kz": "",
+          "region_id": "",
+          "countryCode": "SI",
+          "zipCode_kz": "zipCode ",
+          "city_kz": "",
+          "street_kz": "",
+          "street": "street ",
+          "adress_string": "",
+          "city": "city ",
+          "locality_kz": "",
+          "locality": "locality ",
+          "aria_kz": "",
+          "aria": "aria ",
+          "country_id": "SI",
+          "addressCode": "urAdress",
+          "zipCode": "zipCode ",
+          "adress_string_kz": "",
+          "officeNumber_kz": "",
+          "officeNumber": "officeNumber ",
+          "country_id_kz": "\u0421\u041b\u041e\u0412\u0415\u041d\u0418\u042f",
+          "region_id_kz": "",
+          "buildingNumber": "buildingNumber "
+        }
+      ],
+      "email": "dom333122@yandex.ru",
+      "fillials": [],
+      "org_prav_forma_kz": "\u0421\u0435\u0440\u0456\u043a\u0442\u0435\u0441\u0442\u0456\u0433\u0456 \" \u0438\u043c\u0430\u043d"
+    },
+    "Trebovaniya": {
+      "reglament_ids": [
+        {
+          "name_kz": "\u041a\u041e \u0422\u0420 004/2011 \"\u0422\u00b5\u043c\u0435\u043d \u0432\u043e\u043b\u044c\u0442\u0442\u0456 \u0436\u0430\u0431\u0434\u044b\u045c\u0442\u0430\u0440\u0434\u044b\u045a \u045c\u0430\u0443\u0456\u043f\u0441\u0456\u0437\u0434\u0456\u0433\u0456 \u0442\u0443\u0440\u0430\u043b\u044b\" \u041a\u0435\u0434\u0435\u043d\u0434\u0456\u043a \u043e\u0434\u0430\u045c \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044f\u0441\u044b\u043d\u044b\u045a 2011 \u0436\u044b\u043b\u0453\u044b 16 \u0442\u0430\u043c\u044b\u0437\u0434\u0430\u0453\u044b \u2116 768 \u0448\u0435\u0448\u0456\u043c\u0456\u043c\u0435\u043d \u0431\u0435\u043a\u0456\u0442\u0456\u043b\u0433\u0435\u043d",
+          "name": "\u0422\u0420 \u0422\u0421 004/2011 \"\u041e \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438 \u043d\u0438\u0437\u043a\u043e\u0432\u043e\u043b\u044c\u0442\u043d\u043e\u0433\u043e \u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u044f\" \u0443\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u043d\u043e\u0433\u043e \u0440\u0435\u0448\u0435\u043d\u0438\u0435\u043c \u041a\u043e\u043c\u0438\u0441\u0441\u0438\u0438 \u0422\u0430\u043c\u043e\u0436\u0435\u043d\u043d\u043e\u0433\u043e \u0441\u043e\u044e\u0437\u0430 \u043e\u0442 16 \u0430\u0432\u0433\u0443\u0441\u0442\u0430 2011 \u0433. \u2116 768",
+          "number": "\u0422\u0420 \u0422\u0421 004/2011"
+        },
+
+        {
+          "name_kz": "\u041a\u041e \u0422\u0420 020/2011 \"\u0422\u0435\u0445\u043d\u0438\u043a\u0430\u043b\u044b\u045c \u0436\u0430\u0431\u0434\u044b\u045c\u0442\u0430\u0440\u0434\u044b\u045a \u044d\u043b\u0435\u043a\u0442\u0440\u043b\u0456\u043a \u043c\u0430\u0433\u043d\u0438\u0442\u0442\u0456\u043a \u2030\u0439\u043b\u0435\u0441\u0456\u043c\u0434\u0456\u043b\u0456\u0433\u0456\" \u041a\u0435\u0434\u0435\u043d\u0434\u0456\u043a \u043e\u0434\u0430\u045c \u043a\u043e\u043c\u0438\u0441\u0441\u0438\u044f\u0441\u044b\u043d\u044b\u045a 2011 \u0436\u044b\u043b\u0453\u044b 9 \u0436\u0435\u043b\u0442\u043e\u045c\u0441\u0430\u043d\u0434\u0430\u0453\u044b \u2116 879 \u0448\u0435\u0448\u0456\u043c\u0456\u043c\u0435\u043d \u0431\u0435\u043a\u0456\u0442\u0456\u043b\u0433\u0435\u043d",
+          "name": "\u0422\u0420 \u0422\u0421 020/2011 \"\u042d\u043b\u0435\u043a\u0442\u0440\u043e\u043c\u0430\u0433\u043d\u0438\u0442\u043d\u0430\u044f \u0441\u043e\u0432\u043c\u0435\u0441\u0442\u0438\u043c\u043e\u0441\u0442\u044c \u0442\u0435\u0445\u043d\u0438\u0447\u0435\u0441\u043a\u0438\u0445 \u0441\u0440\u0435\u0434\u0441\u0442\u0432\" \u0443\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u043d\u043e\u0433\u043e \u0440\u0435\u0448\u0435\u043d\u0438\u0435\u043c \u041a\u043e\u043c\u0438\u0441\u0441\u0438\u0438 \u0422\u0430\u043c\u043e\u0436\u0435\u043d\u043d\u043e\u0433\u043e \u0441\u043e\u044e\u0437\u0430 \u043e\u0442 9 \u0434\u0435\u043a\u0430\u0431\u0440\u044f 2011 \u0433. \u2116 879",
+          "number": "\u0422\u0420 \u0422\u0421 020/2011"
+        }
+      ],
+      "npa": [
+        {
+          "npa_d_title_doc_kz": "npa_d_title_doc ",
+          "npa_d_title_doc": "npa_d_title_doc ",
+          "npa_d_date_of_issue_kz": "2018-04-10",
+          "npa_d_number_doc_kz": "1832",
+          "result_string_kz": "npa_d_title_doc  \u043e\u0442 10.04.2018\u0433. 1832",
+          "npa_d_date_of_issue": "2018-04-10",
+          "result_string": "npa_d_title_doc  \u043e\u0442 10.04.2018\u0433. 1832",
+          "npa_d_number_doc": "1832"
+        },
+
+        {
+          "npa_d_title_doc_kz": "npa_d_title_doc ",
+          "npa_d_title_doc": "npa_d_title_doc ",
+          "npa_d_date_of_issue_kz": "2018-04-04",
+          "npa_d_number_doc_kz": "1833",
+          "result_string_kz": "npa_d_title_doc  \u043e\u0442 04.04.2018\u0433. 1833",
+          "npa_d_date_of_issue": "2018-04-04",
+          "result_string": "npa_d_title_doc  \u043e\u0442 04.04.2018\u0433. 1833",
+          "npa_d_number_doc": "1833"
+        }
+      ]
+    },
+    "OtherInfo": {
+      "reg_number": "1",
+      "end_date": "2018-04-16",
+      "type_doc_id": "\u0414\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0438\u044f",
+      "time_number": "00001",
+      "app_date": "2018-04-16",
+      "reg_number_full_string": "\u0415\u0410\u042d\u0421.KZ.\u042e\u0412122.24.01.1",
+      "start_date": "2018-04-16"
+    },
+    "Osnovanie": [
+      {
+        "additionalInfo": "additionalInfo ",
+        "simvolName_kz": "simvolName ",
+        "simvolName": "simvolName ",
+        "agencyNumber_kz": "agencyNumber ",
+        "documentName_kz": "documentName ",
+        "documentName": "documentName ",
+        "dateOfIssue": "2018-04-01",
+        "subjectName": "subjectName ",
+        "result_string_kz": "documentName  \u043e\u0442 01.04.2018\u0433. simvolName  subjectName  agencyNumber  documentNumber  \u043e\u0442 16.04.2018\u0433. additionalInfo ",
+        "subjectName_kz": "subjectName ",
+        "documentNumber": "documentNumber ",
+        "result_string": "documentName  \u043e\u0442 01.04.2018\u0433. simvolName  subjectName  agencyNumber  documentNumber  \u043e\u0442 16.04.2018\u0433. additionalInfo ",
+        "documentNumber_kz": "documentNumber ",
+        "dateOfIssue_kz": "2018-04-01",
+        "agencyNumber": "agencyNumber ",
+        "additionalInfo_kz": "additionalInfo ",
+        "registrationDate_kz": "2018-04-16",
+        "registrationDate": "2018-04-16"
+      }
+    ],
+    "Zajavitel": {
+      "org_prav_forma": "\u0422\u043e\u0432\u0430\u0440\u0438\u0449\u0435\u0441\u0442\u0432\u043e \u043d\u0430 \u0432\u0435\u0440\u0435",
+      "fio_item_id": {
+        "name_dat_pad_kz": "",
+        "name_im_pad_kz": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432 \u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432 \u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447",
+        "dateOfIssue_kz": "",
+        "name_rod_pad": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432\u0430 \u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u0430 \u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447\u0430",
+        "rd_surName": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432\u0430",
+        "name_kz": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432",
+        "surName": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432",
+        "name_dat_pad": "",
+        "surName_kz": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432",
+        "documentName_kz": "",
+        "documentNumber": "1832",
+        "patronymicName_kz": "\u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447",
+        "rd_patronymicName": "\u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447\u0430",
+        "patronymicName": "\u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447",
+        "dateOfIssue": "24.08.1993",
+        "post_id": {
+          "post_rd_pad_kz": "\u0411\u0430\u0441 \u0434\u0438\u0440\u0435\u043a\u0442\u043e\u0440\u0434\u044b\u04a3",
+          "post_rd_pad": "\u0413\u0435\u043d\u0435\u0440\u0430\u043b\u044c\u043d\u043e\u0433\u043e \u0434\u0438\u0440\u0435\u043a\u0442\u043e\u0440\u0430",
+          "post_im_pad_kz": "\u0411\u0430\u0441 \u0434\u0438\u0440\u0435\u043a\u0442\u043e\u0440\u044b",
+          "post_im_pad": "\u0413\u0435\u043d\u0435\u0440\u0430\u043b\u044c\u043d\u044b\u0439 \u0434\u0438\u0440\u0435\u043a\u0442\u043e\u0440"},
+          "documentNumber_kz": "",
+          "rd_patronymicName_kz": "\u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447\u0430",
+          "name": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432",
+          "rd_name": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u0430",
+          "documentName": "\u0434\u043e\u0433\u043e\u0432\u043e\u0440 ",
+          "rd_surName_kz": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432\u0430",
+          "rd_name_kz": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u0430",
+          "name_im_pad": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432 \u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432 \u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447",
+          "name_rod_pad_kz": "\u0422\u044e\u043b\u0435\u043d\u0435\u0432\u0430 \u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u0430 \u0413\u0435\u043d\u043d\u0430\u0434\u044c\u0435\u0432\u0438\u0447\u0430"
+        },
+        "shortTittle_kz": "\u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+        "ogrn_kz": "123467891",
+        "title": "\u0422\u043e\u0432\u0430\u0440\u0438\u0449\u0435\u0441\u0442\u0432\u043e \u043d\u0430 \u0432\u0435\u0440\u0435 \u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+        "faxnum": "+7999815894",
+        "ogrn": "123467891",
+        "address_is_same": true,
+        "phone": "+7999815894",
+        "title_kz": "\u0422\u043e\u0432\u0430\u0440\u0438\u0449\u0435\u0441\u0442\u0432\u043e \u043d\u0430 \u0432\u0435\u0440\u0435 \u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+        "shortTittle": "\u0417\u0430\u044f\u0432\u0438\u0442\u0435\u043b\u044c ",
+        "codeOpf": "",
+        "adress": [
+          {
+            "buildingNumber_kz": "buildingNumber 12",
+            "region_id": "",
+            "countryCode": "KZ",
+            "zipCode_kz": "17236254",
+            "city_kz": "\u0410\u043b\u043c\u0430\u0442\u044b",
+            "street_kz": "\u0443\u043b\u0438\u0446\u0430",
+            "street": "\u0443\u043b\u0438\u0446\u0430",
+            "adress_string": "",
+            "city": "\u0410\u043b\u043c\u0430\u0442\u044b",
+            "locality_kz": "locality ",
+            "locality": "locality ",
+            "aria_kz": "aria ",
+            "aria": "aria ",
+            "country_id": "KZ",
+            "addressCode": "urAdress",
+            "zipCode": "17236254",
+            "adress_string_kz": "",
+            "officeNumber_kz": "officeNumber ",
+            "officeNumber": "officeNumber ",
+            "country_id_kz": "\u049a\u0410\u0417\u0410\u049a\u0421\u0422\u0410\u041d",
+            "region_id_kz": "",
+            "buildingNumber": "buildingNumber 12"
+          },
+
+          {
+            "buildingNumber_kz": "buildingNumber ",
+            "region_id": "",
+            "countryCode": "KZ",
+            "zipCode_kz": "1497874",
+            "city_kz": "city ",
+            "street_kz": "street ",
+            "street": "street ",
+            "adress_string": "",
+            "city": "city ",
+            "locality_kz": "locality ",
+            "locality": "locality ",
+            "aria_kz": "aria ",
+            "aria": "aria ",
+            "country_id": "KZ",
+            "addressCode": "actualAdress",
+            "zipCode": "1497874",
+            "adress_string_kz": "",
+            "officeNumber_kz": "officeNumber ",
+            "officeNumber": "officeNumber ",
+            "country_id_kz": "\u049a\u0410\u0417\u0410\u049a\u0421\u0422\u0410\u041d",
+            "region_id_kz": "",
+            "buildingNumber": "buildingNumber "
+          },
+
+          {
+            "buildingNumber_kz": "",
+            "region_id": "",
+            "countryCode": "SI",
+            "zipCode_kz": "zipCode ",
+            "city_kz": "",
+            "street_kz": "",
+            "street": "street ",
+            "adress_string": "",
+            "city": "city ",
+            "locality_kz": "",
+            "locality": "locality ",
+            "aria_kz": "",
+            "aria": "aria ",
+            "country_id": "SI",
+            "addressCode": "urAdress",
+            "zipCode": "zipCode ",
+            "adress_string_kz": "",
+            "officeNumber_kz": "",
+            "officeNumber": "officeNumber ",
+            "country_id_kz": "\u0421\u041b\u041e\u0412\u0415\u041d\u0418\u042f",
+            "region_id_kz": "",
+            "buildingNumber": "buildingNumber "}],
+            "email": "dom333122@yandex.ru",
+            "fillials": [],
+            "org_prav_forma_kz": "\u0421\u0435\u0440\u0456\u043a\u0442\u0435\u0441\u0442\u0456\u0433\u0456 \" \u0438\u043c\u0430\u043d"
+          },
+          "Dopinfo": {
+            "norm_doc": [
+              {
+                "n_d_title_doc": "n_d_title_doc ",
+                "n_d_date_of_issue_kz": "2018-04-10",
+                "n_d_number_doc_kz": "n_d_number_doc ",
+                "n_d_number_doc": "n_d_number_doc ",
+                "result_string_kz": "n_d_title_doc  \u043e\u0442 10.04.2018\u0433. n_d_number_doc ",
+                "result_string": "n_d_title_doc  \u043e\u0442 10.04.2018\u0433. n_d_number_doc ",
+                "n_d_isPerechenInclude": true,
+                "n_d_date_of_issue": "2018-04-10",
+                "n_d_title_doc_kz": "n_d_title_doc ",
+                "n_d_norm_razdel_ids": [
+                  {
+                    "n_r_title_doc": "1",
+                    "n_r_title_doc_kz": "1",
+                    "n_r_name_element": "2",
+                    "n_r_name_element_kz": "2"
+                  }
+                ]
+              }
+            ],
+            "IniyiSvedeniya": "IniyiSvedeniya "
+          },
+          "Production": {
+            "app_form_numbers_ids": [
+              {
+                "idNumber": 1,
+                "numbersAppForm": "12347"
+              },
+              {
+                "idNumber": 2,
+                "numbersAppForm": "12346"
+              },
+
+              {
+                "idNumber": 3,
+                "numbersAppForm": "12345"
+              }
+            ],
+            "shema_id": "1\u0434",
+            "ProductType": "Serial",
+            "tnved_ids_string": "",
+            "usegeAppForms": "noApp",
+            "production_item_ids": [
+              {
+                "inaya_information": "inaya_information ",
+                "tnved_ids": "0101",
+                "name_of_prod": "\u041e\u0431\u0443\u0432\u044c",
+                "number_part": "2",
+                "result_string": "\u041e\u0431\u0443\u0432\u044c \u041e\u0431\u043e\u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435: \u0441\u0430\u043f\u043e\u0433\u0438, \u0442\u0443\u0444\u043b\u0438 , \u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435: \u0441\u0430\u043f\u043e\u0433\u0438 name_of_prod_trts , \u0442\u0443\u0444\u043b\u0438 name_of_prod_trts  \u0418\u0437\u0433\u043e\u0442\u043e\u0432\u043b\u0435\u043d\u0430 \u0432\u0441\u043e\u043e\u0442\u0432\u0435\u0441\u0442\u0432\u0438\u0438 \u0441 \u0434\u043e\u0433\u043e\u0432\u043e\u0440  \u043e\u0442 03.04.2018\u0433. 123, \u0434\u043e\u0433\u043e\u0432\u043e\u0440  \u043e\u0442 03.04.2018\u0433. 124",
+                "opisanie_information": "opisanie_information ",
+                "production_svedeniya_ids": [
+                  {
+                    "date_of_issue": "2018-04-03",
+                    "title_doc": "\u0434\u043e\u0433\u043e\u0432\u043e\u0440 ",
+                    "number_doc": "123",
+                    "title_doc_kz": "\u0434\u043e\u0433\u043e\u0432\u043e\u0440 "
+                  },
+
+                  {
+                    "date_of_issue": "2018-04-03",
+                    "title_doc": "\u0434\u043e\u0433\u043e\u0432\u043e\u0440 ",
+                    "number_doc": "124",
+                    "title_doc_kz": "\u0434\u043e\u0433\u043e\u0432\u043e\u0440 "
+                  }
+                ]
+              }
+            ]
+          },
+          "id": 1
+        }
+      ]
+   }

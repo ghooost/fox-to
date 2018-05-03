@@ -34,10 +34,10 @@ class FoxApi {
 
     //
     // //TODO: получить blank id Subtopic1?
-    // $dataToInsert['p2_7']=$this->makeString(" ");//required
+    $dataToInsert['p2_7']=$this->makeString($dataIn['OtherInfo']['blank_number']);//required
     //
     // //TODO: количество листов в приложении - где?
-    // $dataToInsert['p2_8_3']=0;//required
+    $dataToInsert['p2_8_3']=$this->makeNum($dataIn['Production']['numAppSheets']);//required
     //
     $dataToInsert['zayv']=$this->makeString($dataIn['Zajavitel']['result_string']);//required
     //
@@ -104,7 +104,18 @@ class FoxApi {
 
 //    $this->out(print_r($dataToInsert,true));
 
-    $this->insert('b10',$dataToInsert);
+    return $this->insert('b10',$dataToInsert,array(
+      'p2_2'=>50,
+      'zayv'=>250,
+      'prod'=>250,
+      'p2_a_3'=>120,
+      'priznak'=>80,
+      'fio'=>250,
+      'fio_zay'=>120, 'fio_zayk'=>120,
+      'fio_zayr'=>120, 'fio_zayrk'=>120,
+      'pole_tnved'=>250,
+      'pole_prod'=>250
+    ));
   }
 
 //Сведения о документах подтверждающих соответствие
@@ -790,14 +801,17 @@ class FoxApi {
     //print_r($data);
     foreach($data['ids'] as $v){
       $this->processItem($v);
+      //break;
     };
   }
+
 
   function processItem($id){
     try {
       $body=$this->queryData("/api/getItem?id=".$id);
       $itemData=json_decode($body,TRUE);
       $this->insertItem($itemData);
+      $this->queryData("/api/markItem?id=".$id.'&state=upload');
     } catch (RuntimeException $e){
       throw $e;
     } catch(Exception $e) {
@@ -845,8 +859,9 @@ class FoxApi {
   function makeDocId($dataIn){
     //TODO: выяснить правильный вариант генерации docid
     //
-    $dataIn['OtherInfo']['reg_number_full_string']='';
-    if(!empty($dataIn['OtherInfo']['reg_number_full_string'])){
+    //$dataIn['OtherInfo']['reg_number_full_string']='';
+    if(!empty($dataIn['OtherInfo']['reg_number_full_string']) &&
+      preg_match('/\w+\.\w+\.\d+\.\d+\.\d+\.\d+/u',$dataIn['OtherInfo']['reg_number_full_string'])){
       return $dataIn['OtherInfo']['reg_number_full_string'];
     } else {
       //Possible values:
@@ -911,11 +926,20 @@ class FoxApi {
     return $dataToInsert;
   }
 
-  function insert($table,$data){
+  function cut($str,$len){
+    $str=substr($str,0,$len)."'";
+    $str=preg_replace("/\'+/","'",$str);
+    return $str;
+  }
+
+  function insert($table,$data,$lengths=array()){
     foreach($data as $key=>$value){
       $value_loc="";
       try {
         $value_loc=iconv('UTF-8','Windows-1251',$value);
+        if(!empty($lengths[$key]) && strlen($value_loc)>$lengths[$key]){
+          $value_loc=$this->cut($value_loc,$lengths[$key]);
+        }
         //$value_loc=$value;
       } catch (Exception $e){
         $this->err($e->getMessage()."<br>".$value,"Ошибка декодирования");
@@ -929,18 +953,20 @@ class FoxApi {
     };
 
     try {
-      $sql='INSERT INTO '.$table.' ('.join(',',$fields).') values ('.join(',',$values).')';
+      $sql='INSERT INTO '.$table.' ('.join(', ',$fields).') values ('.join(', ',$values).')';
       //$out[]='<b>FORM:</b>'.$sql;
       $this->connectDB();
       if($this->db){
         $this->db->Execute($sql);
       };
       //$this->out("<b>DONE:</b> ".$sql);
+      return true;
     } catch (RuntimeException $e){
       throw $e;
     } catch (Exception $e){
       $this->err($e->getMessage()."<br>".iconv("Windows-1251","UTF-8",$sql),"Ошибка исполнения SQL");
     };
+    return false;
   }
 
   function sql($sql){
@@ -1015,24 +1041,24 @@ class FoxApi {
 
     $this->out("Получен документ ".$data['base_id']);
 
-    $this->fillB10($data);
-    //TODO: remove this return!
-    //return;
-    $this->fillB14($data);
-    $this->fillB16($data);
-    $this->fillB17($data);
+    if($this->fillB10($data)){
+      $this->fillB14($data);
+      $this->fillB16($data);
+      $this->fillB17($data);
 
-    $this->fillB18($data);
-    $this->fillB19($data);
-    $this->fillB21($data);
-    //$this->fillB211($data);
-    $this->fillB11($data);
+      $this->fillB18($data);
+      $this->fillB19($data);
+      $this->fillB21($data);
+      //$this->fillB211($data);
+      $this->fillB11($data);
 
-    $this->fillB12($data);
-    $this->fillB14($data);
-    $this->fillB13($data);
-//    print_r($itemData);
-    $this->out("Документ ".$data['base_id']." сохранен в базе данных FoxPro");
+      $this->fillB12($data);
+      $this->fillB14($data);
+      $this->fillB13($data);
+      $this->out("Документ ".$data['base_id']." сохранен в базе данных FoxPro");
+    } else {
+      $this->err("Документ ".$data['base_id']." не сохранен в базе данных FoxPro");
+    };
   }
 
 }

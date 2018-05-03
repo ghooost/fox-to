@@ -77,7 +77,7 @@ $styles
   <div class="header">
     <a href="https://www.advance-docs.ru" class="logo" target="_blank"></a>
     <div class="info">
-      <h1>Без названия</h1>
+      <h1>Синхронизация</h1>
       <span class="info_note">решение для синхронизации АДВАС и FoxPro</span>
     </div>
   </div>

@@ -1,0 +1,6 @@
+INSERT INTO b21 (nsert,id,p2_j_2,p2_j_3,p2_j_4,p2_j_5) values ('2018ЕАЭС.KZ.ЮВ122.23.01.3','1','1','n_d_title_doc ','n_d_number_doc ',DATE(2018,04,10))
+Err: <b>Source:</b> Microsoft OLE DB Provider for Visual FoxPro<br/><b>Description:</b> Data type mismatch.
+
+INSERT INTO b21 (nsert,id,p2_j_2,p2_j_3,p2_j_4,p2_j_5) values ('2018ЕАЭС.KZ.ЮВ122.23.01.3','1','Yes','n_d_title_doc ','n_d_number_doc ',DATE(2018,04,10))
+Err: <b>Source:</b> Microsoft OLE DB Provider for Visual FoxPro<br/><b>Description:</b> Data type mismatch.
+
