@@ -30,8 +30,14 @@ try {
       $out[]="Работаем над этим.";
     break;
     case "check":
-      $data=$api->sql("select nsert='2018ЕАЭС.KZ.7500052.22.01.00001' from b10");
-      print_r($data);
+      $data=$api->sql("select * from b10 where nsert='2018ЕАЭС.KZ.7500052.22.01.00001'");
+
+      while (!$data->EOF) {
+          $fv = $data->Fields("nsert");
+//for($o=>$v in $data) echo $o."<br>";
+          echo $fv->value."<br>\n";
+          $data->MoveNext();
+      };
       exit();
     break;
     //

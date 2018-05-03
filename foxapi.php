@@ -1035,12 +1035,40 @@ class FoxApi {
     };
   }
 
+  function checkId($id){
+    $data=$api->sql("select nsert from b10 where nsert='".$id."'");
+    while (!$data->EOF) {
+//        $fv = $data->Fields("nsert");
+//        echo $fv->value."<br>\n";
+//        $data->MoveNext();
+          return false;
+    };
+    return true;
+  }
+
+  function removeId($id){
+    $tables=array(
+      "b10","b16","b17","b18","b19","b21","b211","b11",
+      "b12","b120","b1201","b1202","b12021","b121",
+      "b122","b1221","b124","b1241","b13","b131","b132",
+      "b133","b1331","b1332","b134","b135","b14",
+      "b140","b1401","b1402","b14021","b141","b142",
+      "b1421"
+    );
+    foreach($t in $tables)
+      $api->sql("delete from ".$t." where='".$id."'");
+  }
+
   function insertItem($data){
     $data['base_id']=$this->makeDocId($data);
     $data['nsert']=date('Y').$this->makeDocId($data);
 
     $this->out("Получен документ ".$data['base_id']);
 
+    if(!$this->checkId($data['nsert'])){
+      $this->err("Документ ".$data['base_id']." существовал в базе данных FoxPro, старая версия была удалена");
+      $this->removeId($data['nsert']);
+    }
 
     if($this->fillB10($data)){
       $this->fillB14($data);
