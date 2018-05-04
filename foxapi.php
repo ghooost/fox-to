@@ -811,7 +811,6 @@ class FoxApi {
       $body=$this->queryData("/api/getItem?id=".$id);
       $itemData=json_decode($body,TRUE);
       $this->insertItem($itemData);
-      $this->queryData("/api/markItem?id=".$id.'&state=upload');
     } catch (RuntimeException $e){
       throw $e;
     } catch(Exception $e) {
@@ -1055,7 +1054,7 @@ class FoxApi {
       "b140","b1401","b1402","b14021","b141","b142",
       "b1421"
     );
-    foreach($t in $tables)
+    foreach($tables as $t)
       $api->sql("delete from ".$t." where='".$id."'");
   }
 
@@ -1065,10 +1064,12 @@ class FoxApi {
 
     $this->out("Получен документ ".$data['base_id']);
 
+/*
     if(!$this->checkId($data['nsert'])){
       $this->err("Документ ".$data['base_id']." существовал в базе данных FoxPro, старая версия была удалена");
       $this->removeId($data['nsert']);
     }
+*/
 
     if($this->fillB10($data)){
       $this->fillB14($data);

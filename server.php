@@ -29,6 +29,9 @@ try {
       $out[]="<b>Здесь будет загрузка отправленных сообщений из FoxPro в АДВАНС.</b>";
       $out[]="Работаем над этим.";
     break;
+    case "uncheck":
+      $api->queryData("/api/markItem?id=".$_REQUEST['id'].'&state=zaregistrirovan');
+    break;
     case "check":
       $data=$api->sql("select * from b10 where nsert='2018ЕАЭС.KZ.7500052.22.01.00001'");
 
