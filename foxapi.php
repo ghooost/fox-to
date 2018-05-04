@@ -1,11 +1,13 @@
 <?php
 class FoxApi {
   function __construct($debugMode=false, $dbConnect="",$apiURL=""){
-    $def=array(
-      "dbConnect"=>"Provider = VFPOLEDB.1; Data Source = \"C:\\Users\\Dev\\Desktop\\FoxProProj\\db_test\\a0a.dbf\"",
-      "apiURL"=>"http://93.174.132.171:5002"
-//      "apiURL"=>"http://192.168.3.54:5002"
-    );
+    require 'settings.php';
+
+//     $def=array(
+//       "dbConnect"=>"Provider = VFPOLEDB.1; Data Source = \"C:\\Users\\Dev\\Desktop\\FoxProProj\\db_test\\a0a.dbf\"",
+//       "apiURL"=>"http://93.174.132.171:5002"
+// //      "apiURL"=>"http://192.168.3.54:5002"
+//     );
 
     $this->connStr=$dbConnect!=""?$dbConnect:$def['dbConnect'];
     $this->apiURL=$apiURL!=""?$apiURL:$def['apiURL'];
@@ -835,6 +837,7 @@ class FoxApi {
   }
 
   function makeNum($data){
+    if(!$data) $data=0;
     return $data;
   }
 
@@ -949,6 +952,13 @@ class FoxApi {
       };
       $fields[]=$key;
       $values[]=$value_loc;
+
+//       echo <<<EOT
+// <hr>
+// $key<br>
+// $value_loc<br>
+// EOT;
+
     };
 
     try {
@@ -1035,7 +1045,7 @@ class FoxApi {
   }
 
   function checkId($id){
-    $data=$api->sql("select nsert from b10 where nsert='".$id."'");
+    $data=$this->sql("select nsert from b10 where nsert='".$id."'");
     while (!$data->EOF) {
 //        $fv = $data->Fields("nsert");
 //        echo $fv->value."<br>\n";
@@ -1054,8 +1064,10 @@ class FoxApi {
       "b140","b1401","b1402","b14021","b141","b142",
       "b1421"
     );
-    foreach($tables as $t)
-      $api->sql("delete from ".$t." where='".$id."'");
+    foreach($tables as $t){
+      //$this->out("delete from ".$t." where nsert='".$id."'");
+      $this->sql("delete from ".$t." where nsert='".$id."'");
+    };
   }
 
   function insertItem($data){
@@ -1064,12 +1076,10 @@ class FoxApi {
 
     $this->out("Получен документ ".$data['base_id']);
 
-/*
     if(!$this->checkId($data['nsert'])){
       $this->err("Документ ".$data['base_id']." существовал в базе данных FoxPro, старая версия была удалена");
       $this->removeId($data['nsert']);
     }
-*/
 
     if($this->fillB10($data)){
       $this->fillB14($data);
@@ -1086,6 +1096,8 @@ class FoxApi {
       $this->fillB14($data);
       $this->fillB13($data);
       $this->out("Документ ".$data['base_id']." сохранен в базе данных FoxPro");
+      $this->queryData("/api/markItem?id=".$id.'&state=upload');
+
     } else {
       $this->err("Документ ".$data['base_id']." не сохранен в базе данных FoxPro");
     };
